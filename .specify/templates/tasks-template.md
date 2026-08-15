@@ -59,7 +59,7 @@ Tasks MUST NOT place data access, storage SDK calls, or business rules under `sr
 
 - [ ] T001 Create project structure per implementation plan
 - [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools, including the layer-boundary import rules (Principle II)
+- [ ] T003 [P] Configure Prettier (.prettierrc.json/.prettierignore) and ESLint with eslint-plugin-boundaries layer rules (Principle II)
 
 ---
 

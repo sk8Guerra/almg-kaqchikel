@@ -1,11 +1,40 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: (unversioned template) → 1.0.0
-Bump rationale: Initial ratification. All template placeholders replaced with
-concrete, project-specific governance. No prior version existed.
+Version change: 1.1.0 → 1.2.0
+Bump rationale: MINOR. No principle was removed or redefined. A new subsection
+was added to Development Workflow & Quality Gates mandating Conventional
+Commits, including the allowed type list, scope guidance tied to Principle I
+module names, and the semver correlation used for the app's own releases.
 
-Modified principles: N/A (initial adoption). Six principles defined:
+Modified sections (1.2.0):
+  - Development Workflow & Quality Gates — added "Commit convention"
+    subsection (Conventional Commits format, types, scope, semver mapping)
+
+---
+History — 1.1.0:
+MINOR. Guidance materially expanded: the Technology & Structural Constraints
+section named the concrete toolchain enforcing Principle II (ESLint +
+eslint-plugin-boundaries), added a mandatory formatting standard (Prettier),
+and recorded the TypeScript 6.x / ESLint 9.x pins the toolchain requires; the
+Quality Gates section gained a formatting check.
+
+Modified sections (1.1.0):
+  - Technology & Structural Constraints — added "Tooling" subsection
+    (Prettier as sole formatting authority, ESLint boundaries as the
+    Principle II enforcement mechanism, config file locations)
+  - Development Workflow & Quality Gates — automated gates now include a
+    format check; review checklist item 7 added for formatter compliance
+
+Principles: unchanged from 1.0.0. Enforcement tooling is named in the
+constraints section on purpose — principles stay tool-agnostic so a future
+switch (e.g. to dependency-cruiser or Biome) is a MINOR amendment, not a
+MAJOR one.
+
+---
+History — 1.0.0 (initial ratification):
+All template placeholders replaced with concrete governance. Six principles
+defined:
   I.   Screaming Architecture — Structure Names the Domain
   II.  The Dependency Rule (NON-NEGOTIABLE)
   III. SDK-First Business Layer (NON-NEGOTIABLE)
@@ -32,7 +61,18 @@ Templates requiring updates:
   ⚠ README.md / docs/quickstart.md — do not exist yet; when created they MUST
      link to this constitution and restate the module layout
 
-Follow-up TODOs: none — no placeholders deferred.
+Follow-up TODOs (1.1.0):
+  ✅ eslint.config.mjs, .prettierrc.json, .prettierignore — landed and verified.
+     Boundary rules were confirmed to fire against deliberate violations of
+     Principles II, III, IV and the cross-module rule; `pnpm verify` runs all
+     three gates green.
+  ⚠ eslint-plugin-boundaries v7 migration — the config still uses the supported
+    v5/v6 rule syntax. Deferred deliberately: a mis-migrated selector fails open
+    rather than loud. See the header comment in eslint.config.mjs.
+  ⚠ TypeScript is pinned to 6.0.3 because typescript-eslint refuses TS 7.x, and
+    ESLint to 9.x because eslint-plugin-react/import/jsx-a11y do not support
+    ESLint 10. Revisit both when the upstream ecosystem catches up
+    (typescript-eslint issue #10940).
 -->
 
 # ALMG Kaqchikel Constitution
@@ -171,6 +211,31 @@ src/
 └── composition/              # DI container / factories — the ONLY place concretes are named
 ```
 
+**Tooling**: The following are the project's authoritative tools. Replacing one is an amendment
+to this constitution, not a preference change.
+
+- **Boundary enforcement**: ESLint (flat config, `eslint.config.mjs`) with
+  `eslint-plugin-boundaries`. The layer topology of Principle II — element types, permitted
+  imports, and the cross-module rule that only a module's `index.ts` is importable from outside
+  — MUST be expressed as `boundaries/element-types` and `boundaries/external` rules with
+  `default: "disallow"`. Adding a layer or module directory without adding its matching
+  `boundaries/elements` entry is itself a violation.
+- **Formatting**: Prettier is the sole authority on code formatting. Formatting MUST NOT be
+  debated in review or duplicated in ESLint; stylistic ESLint rules that conflict with Prettier
+  MUST be disabled (`eslint-config-prettier`). Configuration lives in `.prettierrc.json`, with
+  `.prettierignore` covering build output and generated files.
+- **Type checking**: `tsc --noEmit` in strict mode.
+
+The lint toolchain carries two version pins that MUST NOT be bumped casually:
+TypeScript is held at 6.x because `typescript-eslint` refuses to load under TS 7,
+and ESLint at 9.x because the React/import/a11y plugins bundled by
+`eslint-config-next` do not support ESLint 10. Raising either one silently
+disables boundary enforcement, so a bump MUST be accompanied by a run that
+re-confirms the rules still fire on deliberate violations.
+
+Formatting and boundary configuration MUST live at the repository root and apply to the whole
+codebase — per-directory overrides that weaken a boundary rule are prohibited.
+
 **Configuration**: All environment access MUST be centralized in `src/composition/`, validated at
 startup against a schema, and passed to consumers as typed values. Reading `process.env` anywhere
 else is a violation.
@@ -197,14 +262,56 @@ Complexity Tracking table with a rejected simpler alternative.
 4. New concrete implementations are registered only in `src/composition/`.
 5. New capabilities appear as a domain-named module, not as a new technical folder.
 6. Public SDK surface changes are reflected in the module's `index.ts`.
+7. New layers or module directories have a matching `boundaries/elements` entry, so they are not
+   silently unclassified by the linter.
 
-**Automated gates**: CI MUST run type checking, lint (including the layer-boundary import rules
-from Principle II), and the test suite. A failing boundary rule is a build failure.
+**Automated gates**: CI MUST run, and MUST fail the build on, each of:
+
+1. `prettier --check .` — formatting
+2. `eslint .` — including the Principle II boundary rules
+3. `tsc --noEmit` — strict type checking
+4. The test suite
+
+These gates MUST be runnable locally with the same commands CI uses. Formatting MUST NOT be
+auto-fixed by CI on the developer's behalf; a failing format check is the developer's to correct.
 
 **Testing discipline**: Domain and application logic MUST be testable without infrastructure and
 MUST have unit tests using in-memory ports. Adapters SHOULD be covered by integration tests at
 the edge. Test coverage of business rules through the UI is not a substitute for testing the SDK
 directly.
+
+**Commit convention**: Commits MUST follow Conventional Commits:
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer]
+```
+
+- **Type** MUST be one of: `feat` (new feature), `fix` (bug patch), `docs` (documentation only),
+  `style` (formatting, no behavior change), `refactor` (restructuring without behavior change),
+  `perf` (performance), `test` (adding or updating tests), `build` (build system or
+  dependencies), `ci` (CI configuration), `chore` (anything not touching source or tests).
+- **Scope** is optional and SHOULD name the capability module or layer the change touches
+  (e.g. `feat(dictionary):`, `refactor(composition):`). Scopes SHOULD match directory names
+  under `src/modules/` so history stays navigable by capability (Principle I).
+- **Description** MUST be imperative mood, lower case, no trailing period
+  ("add entry repository port", not "Added entry repository port.").
+- **Body** is optional and explains *why*, not *what* — the diff already shows what changed.
+- **Footer** is optional and carries metadata: issue references, `Co-Authored-By`, and breaking
+  change notices.
+
+Semantic versioning correlation, for the app's own release versioning:
+
+- `feat` → MINOR
+- `fix` → PATCH
+- A commit with `!` after the type/scope (`feat(dictionary)!:`) or a `BREAKING CHANGE:` footer
+  → MAJOR
+
+A commit that violates a constitutional principle MUST NOT be justified in its message; it MUST
+be fixed or recorded as a tracked exception per Governance.
 
 ## Governance
 
@@ -229,4 +336,4 @@ Complexity that violates a principle MUST be justified in writing against a name
 alternative; "it was faster" is not a justification. Unjustified violations MUST be reverted or
 refactored before merge.
 
-**Version**: 1.0.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-15
+**Version**: 1.2.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-15
