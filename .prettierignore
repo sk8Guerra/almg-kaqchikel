@@ -1,0 +1,14 @@
+.next
+node_modules
+out
+build
+coverage
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+next-env.d.ts
+
+# Spec Kit and agent-managed files: formatting is owned by their tooling,
+# and reformatting the constitution/templates would fight future upgrades.
+.specify
+.claude
