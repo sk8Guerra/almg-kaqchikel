@@ -257,6 +257,7 @@ With multiple developers:
 
 ## Notes
 
+- Convenciones obligatorias: props `<ComponentName>Props`, cero comentarios, identificadores en ingles (espanol solo en texto de pantalla), estilos en `.module.scss`
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable

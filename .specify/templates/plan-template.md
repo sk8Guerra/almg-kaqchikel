@@ -60,6 +60,9 @@ rejected simpler alternative, or the design MUST change.
       APIs) is reached through an application-owned interface with an in-memory test double.
 - [ ] **Testing**: Domain and application logic is unit-testable with in-memory ports and no
       live infrastructure.
+- [ ] **Convenciones**: props como `<ComponentName>Props`; sin comentarios en el código;
+      identificadores en inglés (español solo en texto de pantalla); estilos en `.module.scss`
+      colocalizados, sin `style={{ ... }}`.
 - [ ] **Tooling**: Any new module or layer directory this feature introduces has a matching
       `boundaries/elements` entry in `eslint.config.mjs`, so the linter classifies it rather
       than silently ignoring it.

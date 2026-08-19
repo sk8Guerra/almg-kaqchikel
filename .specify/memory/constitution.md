@@ -1,8 +1,22 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.1.0 → 1.2.0
-Bump rationale: MINOR. No principle was removed or redefined. A new subsection
+Version change: 1.2.0 → 1.3.0
+Bump rationale: MINOR. No principle was removed or redefined. A new section,
+"Code Style & Conventions", adds four mechanical rules (component props
+naming, no code comments, English-only identifiers, SCSS modules instead of
+inline styles), and a
+"Decisions of record" list preserves the rationale that previously lived in
+source comments now being removed.
+
+Modified sections (1.3.0):
+  - NEW: Code Style & Conventions
+  - Technology & Structural Constraints — added "Decisions of record"
+  - Development Workflow & Quality Gates — review checklist items 8-11
+
+---
+History — 1.2.0:
+MINOR. No principle was removed or redefined. A new subsection
 was added to Development Workflow & Quality Gates mandating Conventional
 Commits, including the allowed type list, scope guidance tied to Principle I
 module names, and the semver correlation used for the app's own releases.
@@ -236,6 +250,29 @@ re-confirms the rules still fire on deliberate violations.
 Formatting and boundary configuration MUST live at the repository root and apply to the whole
 codebase — per-directory overrides that weaken a boundary rule are prohibited.
 
+
+**Decisions of record** — non-obvious choices whose rationale would otherwise be lost, now that
+source files carry no comments:
+
+- The Prisma client is generated to `prisma/generated/client`, **outside `src/`**, not to
+  `app/generated/prisma` as Prisma's own guide suggests. In this repository `src/app/` is the
+  adapter layer; generating there would place data-access code exactly where Principle IV
+  forbids it, and `boundaries` would classify thousands of generated files as adapters.
+- The Prisma singleton lives in `src/composition/prisma.ts`, not the conventional
+  `src/lib/prisma.ts`, because the usual pattern imports it ambiently from anywhere and
+  Principle V requires concretes to be named in exactly one place.
+- Prisma 7 no longer accepts `url` in the schema `datasource`; the connection lives in
+  `prisma.config.ts` and the client receives an `adapter` at runtime.
+- `src/proxy.ts` is excluded from `boundaries` classification and constrained by an explicit
+  `no-restricted-imports` rule instead: Next.js mandates that filename at the `src/` root, and
+  `boundaries` v7 descriptors match folders, not single files.
+- The `@generated/*` TypeScript alias resolves to a local file, so `boundaries/external` never
+  treats it as an external package. Adapters are kept away from it by a separate
+  `no-restricted-imports` rule, not by the boundaries policy.
+- Passing `signUpUrl` to Clerk's `<SignIn />` is dead code: Clerk decides whether to show the
+  sign-up link from the instance access mode. The real control for invitation-only access is
+  the dashboard setting, never the component prop.
+
 **Configuration**: All environment access MUST be centralized in `src/composition/`, validated at
 startup against a schema, and passed to consumers as typed values. Reading `process.env` anywhere
 else is a violation.
@@ -247,6 +284,85 @@ Any dependency that would break this property requires an entry in Complexity Tr
 **Scaling**: Modules MUST stay independently extractable — no cyclic module dependencies, no
 shared mutable global state, and no cross-module imports except through public SDK entry points.
 Cross-module coordination belongs in a use case that composes the modules' SDKs.
+
+## Code Style & Conventions
+
+These are mechanical rules. They exist so that no review time is ever spent arguing about them.
+
+### Component props are named `<ComponentName>Props`
+
+Every React component that takes props MUST declare them as a named type whose name is the
+component's name suffixed with `Props`, and MUST NOT inline the shape in the signature.
+
+```tsx
+type SessionControlsProps = { compact: boolean };
+export function SessionControls({ compact }: SessionControlsProps) { ... }
+```
+
+Inline shapes (`function C({ a }: { a: string })`) are prohibited, including for `default`
+exports and layouts (`RootLayoutProps`, `PanelPageProps`).
+
+**Rationale**: the props type becomes importable and greppable. Finding every consumer of a
+component's contract is a search for one identifier instead of a reading exercise.
+
+### Code is self-documenting — no comments
+
+Source files MUST NOT contain explanatory comments. If a piece of code needs prose to be
+understood, the fix is a better name, a smaller function, or an extracted named constant —
+not a comment.
+
+- Prohibited: block comments, line comments, and JSDoc prose in `src/`, `tests/`, `scripts/`
+  and `prisma/seed.ts`.
+- Knowledge that genuinely cannot live in code — why an approach was rejected, a vendor
+  constraint, a deferred migration — MUST be recorded in this constitution, in the feature's
+  `specs/` documents, or in `README.md`. It MUST NOT be deleted along with the comment.
+- Machine-readable directives are not comments and remain allowed where required:
+  `"use server"`, `"use client"`, `eslint-disable`, `@ts-expect-error`, and license headers.
+- Configuration files (`eslint.config.mjs`, `prisma/schema.prisma`, CI definitions) are exempt:
+  their comments encode rules rather than explain logic, and losing them silently weakens
+  enforcement.
+
+**Rationale**: comments drift out of sync with the code they describe and are not covered by
+any test, so a stale comment actively misleads. Names and structure are checked by the compiler
+every time. The exemptions exist because a config comment is the only record of *why* a rule is
+shaped the way it is, and that rule failing open is worse than the drift risk.
+
+### Code is written in English — only user-facing text is Spanish
+
+Every identifier MUST be in English: variables, functions, types, parameters, files, folders,
+database columns, test descriptions and commit messages.
+
+The **only** Spanish permitted is text a user reads on screen: JSX copy, labels, placeholders,
+validation messages shown in the interface, and the localization catalogue.
+
+```tsx
+const canReadUsers = await access.can("user:read");
+return <p>No tienes permisos asignados todavía.</p>;
+```
+
+Mixed-language identifiers (`listarUsers`, `canVerPersonas`) are the worst case and are
+prohibited outright.
+
+**Rationale**: the entire ecosystem this code sits in — React, Prisma, Clerk, the standard
+library — is English. Mixing languages inside one expression forces a mental context switch on
+every line and makes symbols unsearchable, because half the codebase calls the same concept
+`user` and the other half `persona`. Keeping Spanish at the presentation edge also means the
+interface can be translated later by touching only that edge.
+
+### Styles live in SCSS modules — no inline styles
+
+Presentation MUST be expressed in `.module.scss` files colocated with the component that uses
+them. The `style={{ ... }}` prop is prohibited.
+
+- Each component that needs styling gets `<component-name>.module.scss` next to it.
+- Class names are referenced through the imported `styles` object, never as raw strings.
+- The single exception is a value that can only be known at runtime (for example a computed
+  position or a percentage from data); such values MUST be passed as CSS custom properties,
+  not as full style objects.
+
+**Rationale**: inline styles cannot be reused, cannot express pseudo-classes, media queries or
+cascade, and re-allocate an object on every render. Colocated modules keep styles deletable
+together with their component, which is what stops dead CSS from accumulating.
 
 ## Development Workflow & Quality Gates
 
@@ -264,6 +380,11 @@ Complexity Tracking table with a rejected simpler alternative.
 6. Public SDK surface changes are reflected in the module's `index.ts`.
 7. New layers or module directories have a matching `boundaries/elements` entry, so they are not
    silently unclassified by the linter.
+8. Component props are declared as a named `<ComponentName>Props` type, not inlined.
+9. No explanatory comments were added to source; any non-obvious rationale went to this
+   constitution, `specs/`, or `README.md` instead.
+10. No `style={{ ... }}` was introduced; styling lives in a colocated `.module.scss`.
+11. All identifiers are in English; Spanish appears only in text the user reads on screen.
 
 **Automated gates**: CI MUST run, and MUST fail the build on, each of:
 
@@ -336,4 +457,4 @@ Complexity that violates a principle MUST be justified in writing against a name
 alternative; "it was faster" is not a justification. Unjustified violations MUST be reverted or
 refactored before merge.
 
-**Version**: 1.2.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-15
+**Version**: 1.3.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-19
