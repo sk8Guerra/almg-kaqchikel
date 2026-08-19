@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "lsof -ti:3000 | xargs kill -9 2>/dev/null; true; next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -11,28 +11,51 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm format:check && pnpm lint && pnpm typecheck"
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:migrate": "prisma migrate dev && prisma generate && (lsof -ti:3000 | xargs kill -9 2>/dev/null; true)",
+    "db:generate": "prisma generate && (lsof -ti:3000 | xargs kill -9 2>/dev/null; true)",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@clerk/localizations": "^4.15.4",
+    "@clerk/nextjs": "^7.7.8",
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
     "next": "^16.3.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@clerk/backend": "^3.16.8",
     "@eslint/eslintrc": "^3.3.6",
     "@types/node": "26.2.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "^19.2.4",
     "@typescript-eslint/parser": "^8.67.0",
+    "dotenv": "^17.4.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-boundaries": "^7.2.0",
     "prettier": "^3.9.6",
-    "typescript": "6.0.3"
+    "prisma": "^7.9.1",
+    "sass": "^1.102.0",
+    "tsx": "^4.23.12",
+    "typescript": "6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma",
+      "esbuild"
+    ]
   }
 }

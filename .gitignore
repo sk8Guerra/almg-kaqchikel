@@ -5,4 +5,11 @@
 /build
 *.tsbuildinfo
 next-env.d.ts
-.env*.local
+
+# Secretos. Se ignora TODO .env salvo el ejemplo sin credenciales.
+.env
+.env.*
+!.env.example
+
+# Cliente generado por Prisma
+/prisma/generated

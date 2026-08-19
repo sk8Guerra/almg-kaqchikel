@@ -80,8 +80,11 @@ const INFRA_ONLY_PACKAGES = [
   "mysql2",
   "drizzle-orm",
   "drizzle-orm/*",
-  "@prisma/client",
+  "@prisma/*",
+  "@prisma/**",
   "prisma",
+  "@generated/*",
+  "@generated/**",
   "@neondatabase/serverless",
   "@supabase/*",
   "@vercel/blob",
@@ -96,7 +99,16 @@ const INFRA_ONLY_PACKAGES = [
   "stripe",
 ];
 
-const FRAMEWORK_PACKAGES = ["react", "react-dom", "react/*", "next", "next/*"];
+const FRAMEWORK_PACKAGES = [
+  "react",
+  "react-dom",
+  "react/*",
+  "next",
+  "next/*",
+  // Clerk: SDK de UI para adapters y auth() para infraestructura.
+  // Prohibido en domain/application/sdk — el negocio no conoce al proveedor (Principio VI).
+  "@clerk/*",
+];
 
 const config = [
   ...nextCoreWebVitals,
@@ -107,6 +119,11 @@ const config = [
     plugins: { boundaries },
     settings: {
       "boundaries/include": ["src/**/*"],
+      // src/proxy.ts es un archivo único en la raíz de src/ impuesto por Next.js;
+      // los descriptores de boundaries v7 son por carpeta y no pueden clasificarlo.
+      // Se excluye aquí y se le aplica una regla explícita más abajo, para que
+      // quede acotado y no sin enforcement.
+      "boundaries/ignore": ["prisma/generated/**", "src/proxy.ts"],
       "boundaries/elements": elements,
       "import/resolver": {
         typescript: { alwaysTryTypes: true },
@@ -230,6 +247,65 @@ const config = [
               disallow: INFRA_ONLY_PACKAGES,
               message:
                 "Constitution Principle IV: adapters must not touch data or storage directly. Call a use case instead of importing '${dependency.source}'.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  {
+    files: ["src/**/*.tsx"],
+    rules: {
+      "react/forbid-dom-props": [
+        "error",
+        {
+          forbid: [
+            {
+              propName: "style",
+              message:
+                "Constitution Code Style: los estilos van en un .module.scss colocalizado, no en style={{ }}.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // El alias @generated/* resuelve a un archivo local, asi que boundaries/external
+  // no lo ve como paquete externo y boundaries/ignore lo excluye del analisis.
+  // Esta regla cierra ese hueco de forma explicita para la capa de adapters.
+  {
+    files: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@generated/*", "@generated/**", "@prisma/*", "@prisma/**"],
+              message:
+                "Constitution Principle IV: los adapters no acceden a datos. Llama a un caso de uso en vez de importar el cliente de base de datos.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // src/proxy.ts: frontera de red. Puede usar el middleware de Clerk, pero no
+  // debe tocar la base de datos ni las tripas de un módulo.
+  {
+    files: ["src/proxy.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@prisma/*", "@prisma/**", "@generated/*", "@generated/**", "@/modules/*/*"],
+              message:
+                "Constitution Principles II y IV: proxy.ts es frontera de red. Sin acceso a datos ni a internals de un modulo; usa el SDK publico del modulo.",
             },
           ],
         },
