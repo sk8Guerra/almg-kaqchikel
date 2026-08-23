@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-import { Descriptions, Tag, Typography } from "antd";
+import { Descriptions, Tag } from "antd";
 import { access } from "@/composition/container";
 import { PersonControls } from "./person-controls";
 import styles from "../personas.module.scss";
-
-const { Text } = Typography;
 
 type PersonPageProps = {
   params: Promise<{ id: string }>;
@@ -31,17 +29,29 @@ export default async function PersonPage({ params }: PersonPageProps) {
     <>
       <h1>{person.email}</h1>
 
-      <Descriptions column={1} bordered size="small" className={styles.details}>
-        <Descriptions.Item label="Nombre">
-          {person.displayName ?? <Text type="secondary">—</Text>}
-        </Descriptions.Item>
-        <Descriptions.Item label="Rol">
-          {person.role === "admin" ? "Administración" : "Miembro"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Estado">
-          <Tag color={status.color}>{status.text}</Tag>
-        </Descriptions.Item>
-      </Descriptions>
+      <Descriptions
+        column={1}
+        bordered
+        size="small"
+        className={styles.details}
+        items={[
+          {
+            key: "displayName",
+            label: "Nombre",
+            children: person.displayName ?? <span className={styles.muted}>—</span>,
+          },
+          {
+            key: "role",
+            label: "Rol",
+            children: person.role === "admin" ? "Administración" : "Miembro",
+          },
+          {
+            key: "status",
+            label: "Estado",
+            children: <Tag color={status.color}>{status.text}</Tag>,
+          },
+        ]}
+      />
 
       {isAdmin ? (
         <PersonControls
@@ -51,9 +61,9 @@ export default async function PersonPage({ params }: PersonPageProps) {
           permissionKeys={person.permissionKeys}
         />
       ) : (
-        <Text type="secondary">
+        <p className={styles.muted}>
           Solo una persona con rol de administración puede cambiar roles y permisos.
-        </Text>
+        </p>
       )}
     </>
   );

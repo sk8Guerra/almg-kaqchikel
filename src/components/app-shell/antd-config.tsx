@@ -3,24 +3,25 @@
 import { App, ConfigProvider } from "antd";
 import type { ThemeConfig } from "antd";
 import esES from "antd/locale/es_ES";
+import { BRAND_TOKENS } from "./theme-tokens";
 
 const theme: ThemeConfig = {
   token: {
-    colorPrimary: "#0f766e",
-    colorLink: "#0f766e",
-    borderRadius: 6,
-    fontSize: 15,
+    colorPrimary: BRAND_TOKENS.colorPrimary,
+    colorLink: BRAND_TOKENS.colorPrimary,
+    borderRadius: BRAND_TOKENS.borderRadius,
+    fontSize: BRAND_TOKENS.fontSize,
     sizeStep: 4,
   },
   components: {
     Layout: {
-      siderBg: "#ffffff",
-      bodyBg: "#f7f8f8",
+      siderBg: BRAND_TOKENS.surface,
+      bodyBg: BRAND_TOKENS.canvas,
     },
     Menu: {
-      itemBg: "#ffffff",
-      itemSelectedBg: "#e6f2f0",
-      itemSelectedColor: "#0f766e",
+      itemBg: BRAND_TOKENS.surface,
+      itemSelectedBg: BRAND_TOKENS.colorPrimarySoft,
+      itemSelectedColor: BRAND_TOKENS.colorPrimary,
     },
   },
 };
