@@ -1,69 +1,65 @@
 "use client";
 
 import { useState } from "react";
+import { Button, Card, Input, Radio, Space, Typography } from "antd";
+import { useActionFeedback } from "@/components/app-shell/action-feedback";
 import { createPersonAction } from "./actions";
 import { PermissionMatrix } from "./permission-matrix";
 import styles from "./personas.module.scss";
 
+const { Text } = Typography;
+
 export function CreatePersonForm() {
   const [role, setRole] = useState<"admin" | "member">("member");
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const report = useActionFeedback();
 
   async function submit(formData: FormData) {
-    const result = await createPersonAction(formData);
-    setFeedback(result.message);
+    report(await createPersonAction(formData));
   }
 
   return (
-    <form action={submit} className={styles.form}>
-      <div className={styles.field}>
-        <label htmlFor="email">Correo</label>
-        <input id="email" name="email" type="email" required placeholder="persona@almg.gt" />
-      </div>
+    <Card title="Dar de alta una persona" className={styles.card}>
+      <form action={submit}>
+        <Space direction="vertical" size="large" className={styles.stack}>
+          <label className={styles.field}>
+            <Text strong>Correo</Text>
+            <Input id="email" name="email" type="email" required placeholder="persona@almg.gt" />
+          </label>
 
-      <fieldset className={styles.field}>
-        <legend>Rol</legend>
-        <label>
-          <input
-            type="radio"
-            name="role"
-            value="admin"
-            checked={role === "admin"}
-            onChange={() => setRole("admin")}
-          />{" "}
-          Administración — puede todo, en todas las áreas
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="role"
-            value="member"
-            checked={role === "member"}
-            onChange={() => setRole("member")}
-          />{" "}
-          Miembro — solo lo que se le indique
-        </label>
-      </fieldset>
+          <fieldset className={styles.fieldset}>
+            <legend>
+              <Text strong>Rol</Text>
+            </legend>
+            <Radio.Group
+              name="role"
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
+              className={styles.stack}
+            >
+              <Radio value="admin">Administración — puede todo, en todas las áreas</Radio>
+              <Radio value="member">Miembro — solo lo que se le indique</Radio>
+            </Radio.Group>
+          </fieldset>
 
-      {role === "member" ? (
-        <fieldset className={styles.field}>
-          <legend>Permisos</legend>
-          <PermissionMatrix name="permissionKeys" />
-        </fieldset>
-      ) : (
-        <p className={styles.hint}>
-          Un administrador no necesita permisos: los tiene todos, incluidas las áreas que se
-          agreguen después.
-        </p>
-      )}
+          {role === "member" ? (
+            <fieldset className={styles.fieldset}>
+              <legend>
+                <Text strong>Permisos</Text>
+              </legend>
+              <PermissionMatrix name="permissionKeys" />
+            </fieldset>
+          ) : (
+            <Text type="secondary">
+              Un administrador no necesita permisos: los tiene todos, incluidas las áreas que se
+              agreguen después.
+            </Text>
+          )}
 
-      <button type="submit">Dar de alta</button>
-
-      {feedback && (
-        <p role="status" className={styles.feedback}>
-          {feedback}
-        </p>
-      )}
-    </form>
+          <Button type="primary" htmlType="submit">
+            Dar de alta
+          </Button>
+        </Space>
+      </form>
+    </Card>
   );
 }

@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Button, Card, Radio, Space, Typography } from "antd";
+import { useActionFeedback } from "@/components/app-shell/action-feedback";
 import { PermissionMatrix } from "../permission-matrix";
 import { changeRoleAction, deactivateAction, reactivateAction } from "./actions";
 import styles from "../personas.module.scss";
+
+const { Text } = Typography;
 
 type PersonControlsProps = {
   personId: string;
@@ -14,70 +18,74 @@ type PersonControlsProps = {
 
 export function PersonControls({ personId, role, isActive, permissionKeys }: PersonControlsProps) {
   const [nextRole, setNextRole] = useState(role);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const report = useActionFeedback();
+
+  async function saveRole(formData: FormData) {
+    report(await changeRoleAction(formData));
+  }
+
+  async function toggleStatus(formData: FormData) {
+    report(await (isActive ? deactivateAction(formData) : reactivateAction(formData)));
+  }
 
   return (
-    <section className={styles.actions}>
-      <form
-        action={async (formData) => setFeedback((await changeRoleAction(formData)).message)}
-        className={styles.form}
-      >
-        <input type="hidden" name="targetId" value={personId} />
+    <Space direction="vertical" size="large" className={styles.stack}>
+      <Card title="Rol y permisos" className={styles.card}>
+        <form action={saveRole}>
+          <input type="hidden" name="targetId" value={personId} />
 
-        <fieldset className={styles.field}>
-          <legend>Rol</legend>
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="admin"
-              checked={nextRole === "admin"}
-              onChange={() => setNextRole("admin")}
-            />{" "}
-            Administración
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="member"
-              checked={nextRole === "member"}
-              onChange={() => setNextRole("member")}
-            />{" "}
-            Miembro
-          </label>
-        </fieldset>
+          <Space direction="vertical" size="large" className={styles.stack}>
+            <fieldset className={styles.fieldset}>
+              <legend>
+                <Text strong>Rol</Text>
+              </legend>
+              <Radio.Group
+                name="role"
+                value={nextRole}
+                onChange={(event) => setNextRole(event.target.value)}
+                className={styles.stack}
+              >
+                <Radio value="admin">Administración</Radio>
+                <Radio value="member">Miembro</Radio>
+              </Radio.Group>
+            </fieldset>
 
-        {nextRole === "member" ? (
-          <fieldset className={styles.field}>
-            <legend>Permisos</legend>
-            <PermissionMatrix name="permissionKeys" checked={permissionKeys} />
-          </fieldset>
-        ) : (
-          <p className={styles.hint}>
-            Un administrador tiene todos los permisos, incluidas las áreas que se agreguen después.
-          </p>
-        )}
+            {nextRole === "member" ? (
+              <fieldset className={styles.fieldset}>
+                <legend>
+                  <Text strong>Permisos</Text>
+                </legend>
+                <PermissionMatrix name="permissionKeys" checked={permissionKeys} />
+              </fieldset>
+            ) : (
+              <Text type="secondary">
+                Un administrador tiene todos los permisos, incluidas las áreas que se agreguen
+                después.
+              </Text>
+            )}
 
-        <button type="submit">Guardar cambios</button>
-      </form>
+            <Button type="primary" htmlType="submit">
+              Guardar cambios
+            </Button>
+          </Space>
+        </form>
+      </Card>
 
-      <form
-        action={async (formData) =>
-          setFeedback(
-            (await (isActive ? deactivateAction(formData) : reactivateAction(formData))).message,
-          )
-        }
-      >
-        <input type="hidden" name="targetId" value={personId} />
-        <button type="submit">{isActive ? "Desactivar" : "Reactivar"}</button>
-      </form>
-
-      {feedback && (
-        <p role="status" className={styles.feedback}>
-          {feedback}
-        </p>
-      )}
-    </section>
+      <Card title={isActive ? "Desactivar cuenta" : "Reactivar cuenta"} className={styles.card}>
+        <form action={toggleStatus}>
+          <input type="hidden" name="targetId" value={personId} />
+          <Space direction="vertical" className={styles.stack}>
+            <Text type="secondary">
+              {isActive
+                ? "La persona dejará de poder entrar hasta que se reactive."
+                : "La persona podrá volver a entrar con sus permisos actuales."}
+            </Text>
+            <Button danger={isActive} htmlType="submit">
+              {isActive ? "Desactivar" : "Reactivar"}
+            </Button>
+          </Space>
+        </form>
+      </Card>
+    </Space>
   );
 }

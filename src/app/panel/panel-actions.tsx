@@ -1,24 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { Button, Typography } from "antd";
+import { useActionFeedback } from "@/components/app-shell/action-feedback";
 import { listUsers } from "./actions";
 import styles from "./panel.module.scss";
+
+const { Text } = Typography;
 
 type PanelActionsProps = {
   canReadUsers: boolean;
 };
 
 export function PanelActions({ canReadUsers }: PanelActionsProps) {
-  const [result, setResult] = useState<string | null>(null);
+  const report = useActionFeedback();
+
+  if (!canReadUsers) {
+    return <Text type="secondary">No tienes permisos asignados todavía.</Text>;
+  }
 
   return (
-    <section className={styles.actions}>
-      {canReadUsers ? (
-        <button onClick={async () => setResult((await listUsers()).message)}>Ver personas</button>
-      ) : (
-        <p>No tienes permisos asignados todavía.</p>
-      )}
-      {result && <p role="status">{result}</p>}
-    </section>
+    <div className={styles.actions}>
+      <Button onClick={async () => report(await listUsers())}>Ver personas</Button>
+    </div>
   );
 }

@@ -1,5 +1,22 @@
+"use client";
+
+import Link from "next/link";
+import { Empty, Table, Tag, Typography } from "antd";
+import type { TableColumnsType } from "antd";
 import type { PersonSummary } from "@/modules/access";
-import styles from "./personas.module.scss";
+
+const { Text } = Typography;
+
+type PersonStatusLabel = {
+  text: string;
+  color: string;
+};
+
+const statusOf = (person: PersonSummary): PersonStatusLabel => {
+  if (person.status === "inactive") return { text: "Desactivada", color: "default" };
+  if (!person.hasSignedIn) return { text: "Sin ingresar todavía", color: "gold" };
+  return { text: "Activa", color: "green" };
+};
 
 type PeopleTableProps = {
   people: PersonSummary[];
@@ -7,48 +24,55 @@ type PeopleTableProps = {
 };
 
 export function PeopleTable({ people, linkToDetail }: PeopleTableProps) {
-  if (people.length === 0) {
-    return <p>No hay personas que coincidan.</p>;
-  }
+  const columns: TableColumnsType<PersonSummary> = [
+    {
+      title: "Correo",
+      dataIndex: "email",
+      key: "email",
+      render: (email: string, person) =>
+        linkToDetail ? <Link href={`/panel/personas/${person.id}`}>{email}</Link> : email,
+    },
+    {
+      title: "Nombre",
+      dataIndex: "displayName",
+      key: "displayName",
+      render: (displayName: string | null) => displayName ?? <Text type="secondary">—</Text>,
+    },
+    {
+      title: "Estado",
+      key: "status",
+      render: (_, person) => {
+        const status = statusOf(person);
+        return <Tag color={status.color}>{status.text}</Tag>;
+      },
+    },
+    {
+      title: "Rol",
+      dataIndex: "role",
+      key: "role",
+      render: (role: PersonSummary["role"]) => (role === "admin" ? "Administración" : "Miembro"),
+    },
+    {
+      title: "Permisos",
+      key: "permissionKeys",
+      render: (_, person) => {
+        if (person.role === "admin") return "Todo";
+        if (person.permissionKeys.length === 0) return <Text type="secondary">Sin permisos</Text>;
+        return person.permissionKeys.map((key) => <Tag key={key}>{key}</Tag>);
+      },
+    },
+  ];
 
   return (
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          <th>Correo</th>
-          <th>Nombre</th>
-          <th>Estado</th>
-          <th>Rol</th>
-          <th>Permisos</th>
-        </tr>
-      </thead>
-      <tbody>
-        {people.map((person) => (
-          <tr key={person.id}>
-            <td>
-              {linkToDetail ? (
-                <a href={`/panel/personas/${person.id}`}>{person.email}</a>
-              ) : (
-                person.email
-              )}
-            </td>
-            <td>{person.displayName ?? "—"}</td>
-            <td className={person.hasSignedIn ? undefined : styles.pending}>
-              {person.status === "inactive"
-                ? "Desactivada"
-                : person.hasSignedIn
-                  ? "Activa"
-                  : "Sin ingresar todavía"}
-            </td>
-            <td>{person.role === "admin" ? "Administración" : "Miembro"}</td>
-            <td>
-              {person.role === "admin"
-                ? "Todo"
-                : person.permissionKeys.join(", ") || "Sin permisos"}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <Table
+      rowKey="id"
+      columns={columns}
+      dataSource={people}
+      pagination={false}
+      scroll={{ x: "max-content" }}
+      locale={{
+        emptyText: <Empty description="No hay personas que coincidan." />,
+      }}
+    />
   );
 }

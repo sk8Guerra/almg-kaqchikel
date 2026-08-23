@@ -18,6 +18,7 @@ domain → application → infrastructure → adapters
 src/
 ├── app/            Rutas, páginas y server actions (adapters). Sin lógica de negocio.
 ├── components/     Componentes presentacionales. Sin acceso a datos.
+│   └── app-shell/  Contenedor del panel y tema de Ant Design (ConfigProvider único)
 ├── modules/        Una carpeta por capacidad de negocio
 │   └── access/     Identidad, perfiles y autorización
 │       ├── domain/          Entidades y reglas puras. No importa nada.
@@ -36,6 +37,11 @@ src/
 2. **A un módulo solo se entra por su `index.ts`.** Lo que no se exporte ahí es privado.
 
 Ambas están garantizadas por `eslint-plugin-boundaries`: intentarlo hace fallar `pnpm lint`.
+
+La interfaz usa **Ant Design**. Los tokens de color, tipografía, espaciado y radio se
+declaran en un solo sitio, `src/components/app-shell/antd-config.tsx`. Escribir
+`style={{ ... }}` a mano sigue prohibido — también sobre los componentes de la librería;
+la composición va en un `.module.scss` colocalizado.
 
 ## Puesta en marcha
 

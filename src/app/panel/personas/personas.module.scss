@@ -1,25 +1,18 @@
-.page {
-  padding: 2rem;
-  max-width: 60rem;
-  margin: 0 auto;
+.stack {
+  width: 100%;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.card {
   margin-bottom: 1.5rem;
 }
 
-.form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: flex-end;
-  padding: 1rem;
-  border: 1px solid currentColor;
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
+.details {
+  margin-bottom: 1.5rem;
+}
+
+.search {
+  max-width: 28rem;
+  margin-bottom: 1.5rem;
 }
 
 .field {
@@ -28,53 +21,11 @@
   gap: 0.25rem;
 }
 
-.roles {
+.fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
   display: flex;
-  gap: 1rem;
-}
-
-.feedback {
-  margin-top: 0.75rem;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-
-  th,
-  td {
-    text-align: left;
-    padding: 0.5rem;
-    border-bottom: 1px solid currentColor;
-  }
-}
-
-.pending {
-  font-style: italic;
-  opacity: 0.75;
-}
-
-.search {
-  margin-bottom: 1rem;
-}
-
-.matrix {
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: 0.35rem 0.75rem;
-    border: 1px solid currentColor;
-    text-align: center;
-  }
-
-  td:first-child,
-  th:first-child {
-    text-align: left;
-  }
-}
-
-.hint {
-  opacity: 0.8;
-  font-style: italic;
+  flex-direction: column;
+  gap: 0.5rem;
 }

@@ -1,14 +1,21 @@
 "use client";
 
+import { useState } from "react";
+import { Checkbox, Table } from "antd";
+import type { TableColumnsType } from "antd";
 import { ACTIONS, MODULES } from "@/modules/access";
-import type { ModuleKey } from "@/modules/access";
-import styles from "./personas.module.scss";
+import type { Action, ModuleKey } from "@/modules/access";
 
-const ACTION_LABELS: Record<string, string> = {
+const ACTION_LABELS: Record<Action, string> = {
   read: "Ver",
   create: "Crear",
   update: "Editar",
   delete: "Eliminar",
+};
+
+type PermissionRow = {
+  moduleKey: ModuleKey;
+  label: string;
 };
 
 type PermissionMatrixProps = {
@@ -18,40 +25,54 @@ type PermissionMatrixProps = {
 };
 
 export function PermissionMatrix({ name, checked = [], disabled = false }: PermissionMatrixProps) {
-  const moduleKeys = Object.keys(MODULES) as ModuleKey[];
+  const [granted, setGranted] = useState<ReadonlySet<string>>(new Set(checked));
+
+  const toggle = (key: string, isGranted: boolean) => {
+    setGranted((current) => {
+      const next = new Set(current);
+      if (isGranted) next.add(key);
+      else next.delete(key);
+      return next;
+    });
+  };
+
+  const rows: PermissionRow[] = (Object.keys(MODULES) as ModuleKey[]).map((moduleKey) => ({
+    moduleKey,
+    label: MODULES[moduleKey].label,
+  }));
+
+  const columns: TableColumnsType<PermissionRow> = [
+    { title: "Área", dataIndex: "label", key: "label" },
+    ...ACTIONS.map((action) => ({
+      title: ACTION_LABELS[action],
+      key: action,
+      align: "center" as const,
+      render: (_: unknown, row: PermissionRow) => {
+        const key = `${row.moduleKey}:${action}`;
+        return (
+          <Checkbox
+            checked={granted.has(key)}
+            disabled={disabled}
+            onChange={(event) => toggle(key, event.target.checked)}
+            aria-label={`${row.label} — ${ACTION_LABELS[action]}`}
+          />
+        );
+      },
+    })),
+  ];
 
   return (
-    <table className={styles.matrix}>
-      <thead>
-        <tr>
-          <th>Área</th>
-          {ACTIONS.map((action) => (
-            <th key={action}>{ACTION_LABELS[action]}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {moduleKeys.map((moduleKey) => (
-          <tr key={moduleKey}>
-            <td>{MODULES[moduleKey].label}</td>
-            {ACTIONS.map((action) => {
-              const key = `${moduleKey}:${action}`;
-              return (
-                <td key={key}>
-                  <input
-                    type="checkbox"
-                    name={name}
-                    value={key}
-                    defaultChecked={checked.includes(key)}
-                    disabled={disabled}
-                    aria-label={`${MODULES[moduleKey].label} — ${ACTION_LABELS[action]}`}
-                  />
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <Table
+        rowKey="moduleKey"
+        columns={columns}
+        dataSource={rows}
+        pagination={false}
+        size="small"
+      />
+      {[...granted].map((key) => (
+        <input key={key} type="hidden" name={name} value={key} />
+      ))}
+    </>
   );
 }

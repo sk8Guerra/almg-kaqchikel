@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { access } from "@/composition/container";
 import { CreatePersonForm } from "./create-person-form";
+import { PeopleSearch } from "./people-search";
 import { PeopleTable } from "./people-table";
 import styles from "./personas.module.scss";
 
@@ -16,20 +16,16 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const people = await access.listPeople({ search: q });
 
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <h1>Personas</h1>
-        <Link href="/panel">Volver al panel</Link>
-      </header>
+    <>
+      <h1>Personas</h1>
 
       {isAdmin && <CreatePersonForm />}
 
-      <form className={styles.search}>
-        <input name="q" defaultValue={q ?? ""} placeholder="Buscar por correo o nombre" />
-        <button type="submit">Buscar</button>
-      </form>
+      <div className={styles.search}>
+        <PeopleSearch defaultValue={q ?? ""} />
+      </div>
 
       <PeopleTable people={people} linkToDetail={isAdmin} />
-    </main>
+    </>
   );
 }

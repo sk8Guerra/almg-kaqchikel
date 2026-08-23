@@ -108,6 +108,13 @@ const FRAMEWORK_PACKAGES = [
   // Clerk: SDK de UI para adapters y auth() para infraestructura.
   // Prohibido en domain/application/sdk — el negocio no conoce al proveedor (Principio VI).
   "@clerk/*",
+  // Ant Design: libreria de presentacion. Tan "framework" como React o Next para
+  // el Principio III — el negocio no conoce la libreria de UI. boundaries/external
+  // tiene default "allow", asi que sin esta entrada un import de antd dentro de
+  // application/ pasaria el lint sin protestar.
+  "antd",
+  "antd/*",
+  "@ant-design/*",
 ];
 
 const config = [
@@ -254,6 +261,12 @@ const config = [
     },
   },
 
+  // La prohibicion de estilos inline necesita las DOS reglas. forbid-dom-props solo
+  // mira elementos DOM: <div style={{}}> falla, pero <Layout.Sider style={{}}> pasaria.
+  // Adoptar una libreria de componentes sin forbid-component-props relajaria de hecho
+  // la regla constitucional en vez de acotarla (constitucion §Code Style, v1.4.0).
+  // forbid-component-props veta className por defecto: hay que listar solo style,
+  // porque className es como se aplican los modulos SCSS que la constitucion exige.
   {
     files: ["src/**/*.tsx"],
     rules: {
@@ -265,6 +278,18 @@ const config = [
               propName: "style",
               message:
                 "Constitution Code Style: los estilos van en un .module.scss colocalizado, no en style={{ }}.",
+            },
+          ],
+        },
+      ],
+      "react/forbid-component-props": [
+        "error",
+        {
+          forbid: [
+            {
+              propName: "style",
+              message:
+                "Constitution Code Style: los estilos van en un .module.scss colocalizado, tampoco sobre componentes de la libreria de UI.",
             },
           ],
         },

@@ -1,6 +1,29 @@
 <!--
 SYNC IMPACT REPORT
 ==================
+Version change: 1.3.0 → 1.4.0
+Bump rationale: MINOR. No principle was removed or redefined, and no existing
+compliant code stops complying. The rule "Styles live in SCSS modules" gains a
+scoped exception for an adopted component library, and the prohibition it
+carries is simultaneously WIDENED: it now covers component props, not only DOM
+props. Guidance materially expanded — the definition of MINOR in this document.
+
+Modified sections (1.4.0):
+  - Code Style & Conventions — "Styles live in SCSS modules" gains the
+    component-library exception and names both enforcing lint rules
+  - Technology & Structural Constraints — three new "Decisions of record"
+    (antd v6 over v5, the SSR style registry, navigation routes kept out of
+    MODULES)
+  - Development Workflow & Quality Gates — review checklist item 10 reworded to
+    name react/forbid-dom-props and react/forbid-component-props
+
+Follow-up TODOs (1.4.0):
+  ✅ eslint.config.mjs — react/forbid-component-props added and verified to fire
+     on a deliberate <Button style={{ }}>; boundaries/external verified to reject
+     an antd import from application/. className confirmed still permitted.
+
+---
+History — 1.3.0:
 Version change: 1.2.0 → 1.3.0
 Bump rationale: MINOR. No principle was removed or redefined. A new section,
 "Code Style & Conventions", adds four mechanical rules (component props
@@ -272,6 +295,19 @@ source files carry no comments:
 - Passing `signUpUrl` to Clerk's `<SignIn />` is dead code: Clerk decides whether to show the
   sign-up link from the instance access mode. The real control for invitation-only access is
   the dashboard setting, never the component prop.
+- Ant Design is pinned to the **6.x** line, not 5.x. antd 6 declares `react: ">=18.0.0"` and
+  supports React 19 natively; the 5.x line requires the `@ant-design/v5-patch-for-react-19`
+  compatibility package plus an `unstableSetRender` call. A permanent shim to paper over an
+  incompatibility already fixed upstream is not worth carrying.
+- `@ant-design/nextjs-registry` wraps the `<body>` so antd's CSS-in-JS output is extracted during
+  the server render. Without it the server HTML arrives unstyled and the browser repaints on
+  hydration — a flash of unstyled content on every load. Next.js's own CSS-in-JS guide documents
+  this three-step pattern and lists `ant-design` among the supported libraries.
+- Navigation routes live in `src/app/panel/nav-routes.ts` as `Record<ModuleKey, string>`, **not**
+  as a `path` field on `MODULES`. A URL is a delivery mechanism, and `MODULES` lives in `domain/`
+  (Principle II). Typing the map as an exhaustive `Record` means adding a capability without
+  giving it a route fails `tsc --noEmit`, so navigation cannot silently fall out of sync with the
+  catalogue.
 
 **Configuration**: All environment access MUST be centralized in `src/composition/`, validated at
 startup against a schema, and passed to consumers as typed values. Reading `process.env` anywhere
@@ -356,13 +392,38 @@ them. The `style={{ ... }}` prop is prohibited.
 
 - Each component that needs styling gets `<component-name>.module.scss` next to it.
 - Class names are referenced through the imported `styles` object, never as raw strings.
-- The single exception is a value that can only be known at runtime (for example a computed
-  position or a percentage from data); such values MUST be passed as CSS custom properties,
-  not as full style objects.
+- A value that can only be known at runtime (for example a computed position or a percentage
+  from data) MUST be passed as a CSS custom property, not as a full style object.
+
+**Component library exception (scoped)**: the project's adopted UI component library —
+currently Ant Design — is exempt from this rule *for the styles it ships itself*. Concretely:
+
+- The library MAY inject its own CSS at runtime (CSS-in-JS). That output is the library's, not
+  ours, and is not subject to the colocated-module rule.
+- Design tokens — colour, typography, spacing, radius — MUST be declared as the library's theme
+  configuration in **exactly one** place, `src/components/app-shell/antd-config.tsx`. A second
+  `ConfigProvider` anywhere in the tree is a violation.
+- **Nothing else is exempt.** Writing `style={{ ... }}` by hand remains prohibited — on DOM
+  elements *and* on the library's components. Composition adjustments (grid, widths, responsive
+  behaviour) still go in a colocated `.module.scss` applied through `className`.
+
+This exception WIDENS the prohibition rather than narrowing it. Two lint rules enforce it
+together, and `react/forbid-component-props` MUST list `style` only: it forbids `className` by
+default, and `className` is how the SCSS modules this section mandates are applied.
+
+| Rule | Covers | Without it |
+|------|--------|------------|
+| `react/forbid-dom-props` | `<div style={{ }}>` | inline styles on plain HTML |
+| `react/forbid-component-props` | `<Layout.Sider style={{ }}>` | inline styles on library components — the hole adopting a library would otherwise open |
 
 **Rationale**: inline styles cannot be reused, cannot express pseudo-classes, media queries or
 cascade, and re-allocate an object on every render. Colocated modules keep styles deletable
-together with their component, which is what stops dead CSS from accumulating.
+together with their component, which is what stops dead CSS from accumulating. The exception
+exists because no mature React component library distributes its presentation as the consumer's
+SCSS modules; refusing the exception means hand-writing tables, forms, menus and responsive
+collapse, which is the work the library was adopted to avoid. Confining the exception to the
+library's *own* output — while extending our own prohibition to cover its components — keeps the
+rule stronger after the adoption than it was before.
 
 ## Development Workflow & Quality Gates
 
@@ -383,7 +444,9 @@ Complexity Tracking table with a rejected simpler alternative.
 8. Component props are declared as a named `<ComponentName>Props` type, not inlined.
 9. No explanatory comments were added to source; any non-obvious rationale went to this
    constitution, `specs/`, or `README.md` instead.
-10. No `style={{ ... }}` was introduced; styling lives in a colocated `.module.scss`.
+10. No `style={{ ... }}` was introduced on a DOM element or on a component; styling lives
+    in a colocated `.module.scss` or in the single theme configuration. Both
+    `react/forbid-dom-props` and `react/forbid-component-props` must stay enabled.
 11. All identifiers are in English; Spanish appears only in text the user reads on screen.
 
 **Automated gates**: CI MUST run, and MUST fail the build on, each of:
@@ -457,4 +520,4 @@ Complexity that violates a principle MUST be justified in writing against a name
 alternative; "it was faster" is not a justification. Unjustified violations MUST be reverted or
 refactored before merge.
 
-**Version**: 1.3.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-19
+**Version**: 1.4.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-23

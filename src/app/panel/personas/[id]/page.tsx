@@ -1,8 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Descriptions, Tag, Typography } from "antd";
 import { access } from "@/composition/container";
 import { PersonControls } from "./person-controls";
 import styles from "../personas.module.scss";
+
+const { Text } = Typography;
 
 type PersonPageProps = {
   params: Promise<{ id: string }>;
@@ -18,22 +20,28 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
   if (!person) notFound();
 
-  return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <h1>{person.email}</h1>
-        <Link href="/panel/personas">Volver a personas</Link>
-      </header>
+  const status =
+    person.status === "inactive"
+      ? { text: "Desactivada", color: "default" }
+      : person.hasSignedIn
+        ? { text: "Activa", color: "green" }
+        : { text: "Sin ingresar todavía", color: "gold" };
 
-      <p>Rol: {person.role === "admin" ? "Administración" : "Miembro"}</p>
-      <p>
-        Estado:{" "}
-        {person.status === "inactive"
-          ? "Desactivada"
-          : person.hasSignedIn
-            ? "Activa"
-            : "Sin ingresar todavía"}
-      </p>
+  return (
+    <>
+      <h1>{person.email}</h1>
+
+      <Descriptions column={1} bordered size="small" className={styles.details}>
+        <Descriptions.Item label="Nombre">
+          {person.displayName ?? <Text type="secondary">—</Text>}
+        </Descriptions.Item>
+        <Descriptions.Item label="Rol">
+          {person.role === "admin" ? "Administración" : "Miembro"}
+        </Descriptions.Item>
+        <Descriptions.Item label="Estado">
+          <Tag color={status.color}>{status.text}</Tag>
+        </Descriptions.Item>
+      </Descriptions>
 
       {isAdmin ? (
         <PersonControls
@@ -43,10 +51,10 @@ export default async function PersonPage({ params }: PersonPageProps) {
           permissionKeys={person.permissionKeys}
         />
       ) : (
-        <p className={styles.hint}>
+        <Text type="secondary">
           Solo una persona con rol de administración puede cambiar roles y permisos.
-        </p>
+        </Text>
       )}
-    </main>
+    </>
   );
 }
