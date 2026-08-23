@@ -11,6 +11,7 @@ const theme: ThemeConfig = {
     colorLink: BRAND_TOKENS.colorPrimary,
     borderRadius: BRAND_TOKENS.borderRadius,
     fontSize: BRAND_TOKENS.fontSize,
+    fontFamily: BRAND_TOKENS.fontFamily,
     sizeStep: 4,
   },
   components: {
@@ -33,7 +34,7 @@ type AntdConfigProps = {
 export function AntdConfig({ children }: AntdConfigProps) {
   return (
     <ConfigProvider locale={esES} theme={theme}>
-      <App component={false}>{children}</App>
+      <App>{children}</App>
     </ConfigProvider>
   );
 }

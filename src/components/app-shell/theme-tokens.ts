@@ -5,6 +5,8 @@ export const BRAND_TOKENS = {
   canvas: "#f7f8f8",
   borderRadius: 6,
   fontSize: 15,
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
 } as const;
 
 export const asPixels = (value: number): string => `${value}px`;
