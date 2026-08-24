@@ -1,10 +1,8 @@
 import { access } from "@/composition/container";
-import { PanelActions } from "./panel-actions";
 import styles from "./panel.module.scss";
 
 export default async function PanelPage() {
   const user = await access.syncSignedInUser();
-  const canReadUsers = await access.can("access:read");
   const areas = await access.listAccessibleModules();
 
   return (
@@ -21,8 +19,6 @@ export default async function PanelPage() {
           de administración que te indique a qué áreas necesitas acceso.
         </p>
       )}
-
-      <PanelActions canReadUsers={canReadUsers} />
     </>
   );
 }
