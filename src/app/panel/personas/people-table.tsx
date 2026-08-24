@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Empty, Table, Tag, Typography } from "antd";
 import type { TableColumnsType } from "antd";
 import type { PersonSummary } from "@/modules/access";
+import { permissionLabel } from "./permission-labels";
 
 const { Text } = Typography;
 
@@ -58,7 +59,7 @@ export function PeopleTable({ people, linkToDetail }: PeopleTableProps) {
       render: (_, person) => {
         if (person.role === "admin") return "Todo";
         if (person.permissionKeys.length === 0) return <Text type="secondary">Sin permisos</Text>;
-        return person.permissionKeys.map((key) => <Tag key={key}>{key}</Tag>);
+        return person.permissionKeys.map((key) => <Tag key={key}>{permissionLabel(key)}</Tag>);
       },
     },
   ];

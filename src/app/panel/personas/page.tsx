@@ -1,5 +1,5 @@
 import { access } from "@/composition/container";
-import { CreatePersonForm } from "./create-person-form";
+import { CreatePersonButton } from "./create-person-button";
 import { PeopleSearch } from "./people-search";
 import { PeopleTable } from "./people-table";
 import styles from "./personas.module.scss";
@@ -17,9 +17,10 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
 
   return (
     <>
-      <h1>Personas</h1>
-
-      {isAdmin && <CreatePersonForm />}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Personas</h1>
+        {isAdmin && <CreatePersonButton />}
+      </div>
 
       <div className={styles.search}>
         <PeopleSearch defaultValue={q ?? ""} />

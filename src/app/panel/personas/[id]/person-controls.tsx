@@ -29,12 +29,12 @@ export function PersonControls({ personId, role, isActive, permissionKeys }: Per
   }
 
   return (
-    <Space direction="vertical" size="large" className={styles.stack}>
+    <Space orientation="vertical" size="large" className={styles.stack}>
       <Card title="Rol y permisos" className={styles.card}>
         <form action={saveRole}>
           <input type="hidden" name="targetId" value={personId} />
 
-          <Space direction="vertical" size="large" className={styles.stack}>
+          <Space orientation="vertical" size="large" className={styles.stack}>
             <fieldset className={styles.fieldset}>
               <legend>
                 <Text strong>Rol</Text>
@@ -74,7 +74,7 @@ export function PersonControls({ personId, role, isActive, permissionKeys }: Per
       <Card title={isActive ? "Desactivar cuenta" : "Reactivar cuenta"} className={styles.card}>
         <form action={toggleStatus}>
           <input type="hidden" name="targetId" value={personId} />
-          <Space direction="vertical" className={styles.stack}>
+          <Space orientation="vertical" className={styles.stack}>
             <Text type="secondary">
               {isActive
                 ? "La persona dejará de poder entrar hasta que se reactive."

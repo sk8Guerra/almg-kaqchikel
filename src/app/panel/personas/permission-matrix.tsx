@@ -4,14 +4,8 @@ import { useState } from "react";
 import { Checkbox, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import { ACTIONS, MODULES } from "@/modules/access";
-import type { Action, ModuleKey } from "@/modules/access";
-
-const ACTION_LABELS: Record<Action, string> = {
-  read: "Ver",
-  create: "Crear",
-  update: "Editar",
-  delete: "Eliminar",
-};
+import type { ModuleKey } from "@/modules/access";
+import { ACTION_LABELS } from "./permission-labels";
 
 type PermissionRow = {
   moduleKey: ModuleKey;
