@@ -15,12 +15,11 @@
   width: 100%;
 }
 
-.card {
-  margin-bottom: 1.5rem;
-}
-
-.details {
-  margin-bottom: 1.5rem;
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: stretch;
 }
 
 .search {

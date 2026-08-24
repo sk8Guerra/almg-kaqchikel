@@ -30,7 +30,7 @@ export function PersonControls({ personId, role, isActive, permissionKeys }: Per
 
   return (
     <Space orientation="vertical" size="large" className={styles.stack}>
-      <Card title="Rol y permisos" className={styles.card}>
+      <Card title="Rol y permisos">
         <form action={saveRole}>
           <input type="hidden" name="targetId" value={personId} />
 
@@ -71,7 +71,7 @@ export function PersonControls({ personId, role, isActive, permissionKeys }: Per
         </form>
       </Card>
 
-      <Card title={isActive ? "Desactivar cuenta" : "Reactivar cuenta"} className={styles.card}>
+      <Card title={isActive ? "Desactivar cuenta" : "Reactivar cuenta"}>
         <form action={toggleStatus}>
           <input type="hidden" name="targetId" value={personId} />
           <Space orientation="vertical" className={styles.stack}>

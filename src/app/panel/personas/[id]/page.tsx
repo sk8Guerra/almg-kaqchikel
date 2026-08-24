@@ -26,14 +26,13 @@ export default async function PersonPage({ params }: PersonPageProps) {
         : { text: "Sin ingresar todavía", color: "gold" };
 
   return (
-    <>
-      <h1>{person.email}</h1>
+    <div className={styles.page}>
+      <h1 className={styles.title}>{person.email}</h1>
 
       <Descriptions
         column={1}
         bordered
         size="small"
-        className={styles.details}
         items={[
           {
             key: "displayName",
@@ -65,6 +64,6 @@ export default async function PersonPage({ params }: PersonPageProps) {
           Solo una persona con rol de administración puede cambiar roles y permisos.
         </p>
       )}
-    </>
+    </div>
   );
 }
