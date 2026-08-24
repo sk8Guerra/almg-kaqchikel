@@ -10,14 +10,14 @@ type PeopleSearchProps = {
 export function PeopleSearch({ defaultValue }: PeopleSearchProps) {
   return (
     <form>
-      <Space.Compact>
+      <Space.Compact block>
         <Input
           name="q"
           defaultValue={defaultValue}
           placeholder="Buscar por correo o nombre"
           aria-label="Buscar personas por correo o nombre"
         />
-        <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+        <Button htmlType="submit" icon={<SearchOutlined />}>
           Buscar
         </Button>
       </Space.Compact>
