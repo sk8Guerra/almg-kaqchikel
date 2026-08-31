@@ -20,7 +20,10 @@ src/
 ├── components/     Componentes presentacionales. Sin acceso a datos.
 │   └── app-shell/  Contenedor del panel y tema de Ant Design (ConfigProvider único)
 ├── modules/        Una carpeta por capacidad de negocio
-│   └── access/     Identidad, perfiles y autorización
+│   ├── access/     Identidad, perfiles y autorización
+│   ├── enrollment/ Formularios, convocatorias, inscripciones y reportes
+│   ├── geography/  Departamentos, municipios y zonas de Guatemala
+│   └── students/   Padrón de estudiantes
 │       ├── domain/          Entidades y reglas puras. No importa nada.
 │       ├── application/     Casos de uso + puertos (el "SDK" del módulo)
 │       ├── infrastructure/  Implementaciones de puertos (Clerk, Prisma)

@@ -39,8 +39,8 @@ export function PersonControls({ personId, role, isActive, permissionKeys }: Per
               <legend>
                 <Text strong>Rol</Text>
               </legend>
+              <input type="hidden" name="role" value={nextRole} />
               <Radio.Group
-                name="role"
                 value={nextRole}
                 onChange={(event) => setNextRole(event.target.value)}
                 className={styles.stack}

@@ -18,6 +18,20 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
   if (!person) notFound();
 
+  const personIsAdmin = person.role === "admin";
+  const isSelf = person.id === viewer.id;
+  const canEdit = isAdmin && !isSelf && !personIsAdmin;
+
+  let cannotEditReason = "";
+
+  if (!isAdmin) {
+    cannotEditReason = "Solo una persona con rol de administración puede cambiar roles y permisos.";
+  } else if (isSelf) {
+    cannotEditReason = "No puedes cambiar tu propio rol ni desactivar tu cuenta.";
+  } else if (personIsAdmin) {
+    cannotEditReason = "No puedes editar a otra persona con rol de administración desde aquí.";
+  }
+
   const status =
     person.status === "inactive"
       ? { text: "Desactivada", color: "default" }
@@ -52,18 +66,16 @@ export default async function PersonPage({ params }: PersonPageProps) {
         ]}
       />
 
-      {isAdmin ? (
+      {canEdit && (
         <PersonControls
           personId={person.id}
           role={person.role}
           isActive={person.status === "active"}
           permissionKeys={person.permissionKeys}
         />
-      ) : (
-        <p className={styles.muted}>
-          Solo una persona con rol de administración puede cambiar roles y permisos.
-        </p>
       )}
+
+      {!canEdit && <p className={styles.muted}>{cannotEditReason}</p>}
     </div>
   );
 }

@@ -54,6 +54,7 @@ export function PanelShell({ navItems, userLabel, sessionControls, children }: P
         collapsed={collapsed}
         onCollapse={setCollapsed}
         onBreakpoint={setCollapsed}
+        trigger={null}
         className={styles.sider}
       >
         <div className={collapsed ? `${styles.brand} ${styles.brandCollapsed}` : styles.brand}>

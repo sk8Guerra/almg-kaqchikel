@@ -18,6 +18,12 @@ const clerkAppearance = {
     fontSize: asPixels(BRAND_TOKENS.fontSize),
     fontFamily: BRAND_TOKENS.fontFamily,
   },
+  elements: {
+    // La cuenta la administra la ALMG: el usuario no gestiona sus correos
+    // ni entra a Seguridad (dispositivos activos y borrado de cuenta).
+    navbarButton__security: { display: "none" },
+    profileSection__emailAddresses: { display: "none" },
+  },
 };
 
 type RootLayoutProps = {

@@ -1,0 +1,75 @@
+.page {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  margin: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.required {
+  color: #cf1322;
+}
+
+.documents {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.muted {
+  opacity: 0.72;
+}

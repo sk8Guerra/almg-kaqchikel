@@ -11,6 +11,7 @@ const required = (name: string): string => {
 export type Env = {
   readonly databaseUrl: string;
   readonly clerkSecretKey: string;
+  readonly blobReadWriteToken: string;
 };
 
 let cached: Env | null = null;
@@ -20,6 +21,7 @@ export const env = (): Env => {
   cached = {
     databaseUrl: required("DATABASE_URL"),
     clerkSecretKey: required("CLERK_SECRET_KEY"),
+    blobReadWriteToken: required("BLOB_READ_WRITE_TOKEN"),
   };
   return cached;
 };

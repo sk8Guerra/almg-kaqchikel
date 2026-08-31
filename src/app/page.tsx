@@ -1,20 +1,28 @@
 import Link from "next/link";
 import { Button } from "antd";
+import { enrollment } from "@/composition/container";
+import { OfferingGrid } from "./offering-grid";
 import styles from "./page.module.scss";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const offerings = await enrollment.listOpenOfferings();
+
   return (
     <main className={styles.page}>
-      <div className={styles.stack}>
-        <h1>ALMG Kaqchikel</h1>
-        <p className={styles.muted}>Acceso restringido a personas autorizadas de la Academia.</p>
+      <header className={styles.header}>
+        <div className={styles.headerRow}>
+          <h1 className={styles.title}>Rutz&apos;ib&apos;axik b&apos;i&apos;aj — Inscripciones</h1>
+          <Link href="/ingresar">
+            <Button>Ingresar</Button>
+          </Link>
+        </div>
+        <p className={styles.muted}>
+          Academia de Lenguas Mayas de Guatemala — Comunidad Lingüística Kaqchikel. Elige el curso
+          en el que quieres inscribirte y llena el formulario antes de que cierre la convocatoria.
+        </p>
+      </header>
 
-        <Link href="/ingresar">
-          <Button type="primary" size="large">
-            Ingresar
-          </Button>
-        </Link>
-      </div>
+      <OfferingGrid offerings={offerings} />
     </main>
   );
 }

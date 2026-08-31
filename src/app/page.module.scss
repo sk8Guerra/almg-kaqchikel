@@ -1,17 +1,56 @@
 .page {
-  display: grid;
-  place-items: center;
-  min-height: 100dvh;
-  padding: 2rem;
-}
-
-.stack {
-  width: 100%;
-  max-width: 32rem;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1.25rem 4rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.headerRow {
+  display: flex;
   align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.empty {
+  padding: 3rem 1rem;
 }
 
 .muted {

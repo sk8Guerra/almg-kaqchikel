@@ -300,6 +300,11 @@ const config = [
   // El alias @generated/* resuelve a un archivo local, asi que boundaries/external
   // no lo ve como paquete externo y boundaries/ignore lo excluye del analisis.
   // Esta regla cierra ese hueco de forma explicita para la capa de adapters.
+  //
+  // El segundo patron cubre un hueco distinto: composition/ es un destino LEGAL
+  // para un adapter (de ahi sale el contenedor), asi que element-types no puede
+  // impedir que una pagina importe el cliente Prisma suelto que vive ahi. Se veta
+  // por nombre; el contenedor sigue siendo importable.
   {
     files: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
     rules: {
@@ -311,6 +316,36 @@ const config = [
               group: ["@generated/*", "@generated/**", "@prisma/*", "@prisma/**"],
               message:
                 "Constitution Principle IV: los adapters no acceden a datos. Llama a un caso de uso en vez de importar el cliente de base de datos.",
+            },
+            {
+              group: ["@/composition/prisma", "**/composition/prisma"],
+              message:
+                "Constitution Principle IV: el cliente de base de datos es del composition root. Un adapter importa el contenedor (@/composition/container), nunca la conexion.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // Mismo hueco del alias @generated/*, del otro lado de la frontera: boundaries/external
+  // tampoco lo ve desde domain/ ni application/. Sin esta regla, el nucleo del negocio
+  // podria importar tipos del ORM y el Principio II dejaria de ser exigible ahi.
+  {
+    files: [
+      "src/modules/*/domain/**/*.ts",
+      "src/modules/*/application/**/*.ts",
+      "src/shared/**/*.ts",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@generated/*", "@generated/**", "@prisma/*", "@prisma/**"],
+              message:
+                "Constitution Principle II: domain y application no conocen el ORM. Los tipos de persistencia se quedan en infrastructure/.",
             },
           ],
         },

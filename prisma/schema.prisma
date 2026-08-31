@@ -43,6 +43,7 @@ model User {
   permissions   UserPermission[]
   actedActions  AdminAction[]    @relation("ActorActions")
   targetActions AdminAction[]    @relation("TargetActions")
+  offerings     FormOffering[]
 
   @@index([email])
   @@index([status])
@@ -84,4 +85,145 @@ model AdminAction {
   @@index([targetId, createdAt])
   @@index([actorId, createdAt])
   @@map("admin_actions")
+}
+
+enum LanguageTrack {
+  L1
+  L2
+
+  @@map("language_track")
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+
+  @@map("course_level")
+}
+
+enum Modality {
+  VIRTUAL
+  IN_PERSON
+
+  @@map("modality")
+}
+
+enum Sex {
+  FEMALE
+  MALE
+
+  @@map("sex")
+}
+
+enum AgeRange {
+  FROM_14_TO_30
+  FROM_31_TO_60
+  OVER_60
+
+  @@map("age_range")
+}
+
+enum EthnicGroup {
+  MAYA
+  GARIFUNA
+  XINKA
+  LADINO
+  OTHER
+
+  @@map("ethnic_group")
+}
+
+enum DocumentType {
+  IDENTITY_CARD
+  COMMITMENT_LETTER
+  ENROLLMENT_SHEET
+  BEGINNER_CERTIFICATE
+  INTERMEDIATE_CERTIFICATE
+
+  @@map("document_type")
+}
+
+model Student {
+  id               String           @id @default(cuid())
+  documentId       String           @unique @map("document_id")
+  firstNames       String           @map("first_names")
+  lastNames        String           @map("last_names")
+  sex              Sex
+  municipalityCode String           @map("municipality_code")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  submissions      FormSubmission[]
+
+  @@index([lastNames, firstNames])
+  @@map("students")
+}
+
+model FormTemplate {
+  id        String         @id @default(cuid())
+  code      String         @unique
+  name      String
+  track     LanguageTrack
+  level     CourseLevel
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+  offerings FormOffering[]
+
+  @@map("form_templates")
+}
+
+model FormOffering {
+  id               String           @id @default(cuid())
+  formTemplateId   String           @map("form_template_id")
+  formTemplate     FormTemplate     @relation(fields: [formTemplateId], references: [id])
+  year             Int
+  municipalityCode String           @map("municipality_code")
+  modality         Modality
+  opensAt          DateTime         @map("opens_at")
+  closesAt         DateTime         @map("closes_at")
+  classesStartOn   DateTime?        @map("classes_start_on") @db.Date
+  scheduleLabel    String?          @map("schedule_label")
+  isActive         Boolean          @default(true) @map("is_active")
+  createdById      String           @map("created_by")
+  createdBy        User             @relation(fields: [createdById], references: [id])
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  submissions      FormSubmission[]
+
+  @@unique([formTemplateId, year, municipalityCode, modality])
+  @@index([opensAt, closesAt])
+  @@index([year])
+  @@map("form_offerings")
+}
+
+model FormSubmission {
+  id             String               @id @default(cuid())
+  formOfferingId String               @map("form_offering_id")
+  formOffering   FormOffering         @relation(fields: [formOfferingId], references: [id])
+  studentId      String               @map("student_id")
+  student        Student              @relation(fields: [studentId], references: [id])
+  answers        Json
+  ageRange       AgeRange             @map("age_range")
+  ethnicGroup    EthnicGroup          @map("ethnic_group")
+  submittedAt    DateTime             @default(now()) @map("submitted_at")
+  documents      SubmissionDocument[]
+
+  @@unique([formOfferingId, studentId])
+  @@index([formOfferingId, submittedAt])
+  @@index([studentId])
+  @@map("form_submissions")
+}
+
+model SubmissionDocument {
+  id           String         @id @default(cuid())
+  submissionId String         @map("submission_id")
+  submission   FormSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  type         DocumentType
+  storageKey   String         @map("storage_key")
+  contentType  String         @map("content_type")
+  sizeBytes    Int            @map("size_bytes")
+  uploadedAt   DateTime       @default(now()) @map("uploaded_at")
+
+  @@unique([submissionId, type])
+  @@map("submission_documents")
 }

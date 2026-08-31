@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.title {
+  margin: 0;
+}
+
+.search {
+  width: 100%;
+  max-width: 24rem;
+  margin-left: auto;
+  margin-bottom: 1rem;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.muted {
+  opacity: 0.72;
+}

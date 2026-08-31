@@ -19,6 +19,7 @@
 }
 
 .siderFooter {
+  margin-top: auto;
   display: flex;
   align-items: center;
   gap: 0.625rem;
@@ -42,10 +43,15 @@
   position: sticky;
   top: 0;
   height: 100dvh;
+  overflow: auto;
+}
+
+// Antd envuelve el contenido del Sider, así que la columna se arma ahí dentro
+// para que el pie con la sesión caiga hasta abajo.
+.sider :global(.ant-layout-sider-children) {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  overflow: auto;
+  height: 100%;
 }
 
 .content {
@@ -55,18 +61,8 @@
   width: 100%;
 }
 
-.trigger {
-  display: none;
-}
-
 @media (max-width: 48rem) {
   .content {
     padding: 1rem;
-  }
-
-  .trigger {
-    display: inline-flex;
-    align-items: center;
-    margin: 0.5rem 0 0 0.5rem;
   }
 }

@@ -4,6 +4,8 @@ export type Action = (typeof ACTIONS)[number];
 
 export const MODULES = {
   access: { label: "Personas", actions: ACTIONS },
+  enrollment: { label: "Inscripciones", actions: ACTIONS },
+  students: { label: "Estudiantes", actions: ACTIONS },
 } as const;
 
 export type ModuleKey = keyof typeof MODULES;
