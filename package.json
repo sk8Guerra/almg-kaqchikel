@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "lsof -ti:3000 | xargs kill -9 2>/dev/null; true; next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
