@@ -48,11 +48,14 @@ export class VercelBlobFileStore implements FileStore {
       key: input.key,
       url: presignedUrl,
       method: "PUT",
+      // Las restricciones de la subida (sufijo aleatorio, tipos permitidos, tamaño máximo y
+      // caducidad) van firmadas dentro de la URL, no en cabeceras. Repetirlas aquí no añade
+      // nada y `x-add-random-suffix` además no está en el Access-Control-Allow-Headers del
+      // endpoint, así que el navegador aborta la subida en el preflight.
       headers: {
         "content-type": input.contentType,
         "x-content-type": input.contentType,
         "x-vercel-blob-access": ACCESS,
-        "x-add-random-suffix": "1",
       },
       expiresAt: input.expiresAt,
     };
