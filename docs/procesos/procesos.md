@@ -5,11 +5,11 @@ uno de estos tres, y los tres salen de este repo porque los procesos están escr
 explícito —casos de uso puros en `src/modules/*/application/use-cases/`— y no repartidos entre
 componentes:
 
-| Diagrama UML                | Qué contesta                              | Mermaid            | Fidelidad |
-| --------------------------- | ----------------------------------------- | ------------------ | --------- |
-| Actividad                   | ¿Qué pasos y decisiones sigue el flujo?   | `flowchart`        | Aproximada: no hay notación nativa de _fork/join_ ni calles verticales |
-| Secuencia                   | ¿Quién le habla a quién y en qué orden?   | `sequenceDiagram`  | Fiel      |
-| Máquina de estados          | ¿En qué estados vive una entidad?         | `stateDiagram-v2`  | Fiel      |
+| Diagrama UML       | Qué contesta                            | Mermaid           | Fidelidad                                                              |
+| ------------------ | --------------------------------------- | ----------------- | ---------------------------------------------------------------------- |
+| Actividad          | ¿Qué pasos y decisiones sigue el flujo? | `flowchart`       | Aproximada: no hay notación nativa de _fork/join_ ni calles verticales |
+| Secuencia          | ¿Quién le habla a quién y en qué orden? | `sequenceDiagram` | Fiel                                                                   |
+| Máquina de estados | ¿En qué estados vive una entidad?       | `stateDiagram-v2` | Fiel                                                                   |
 
 Se renderizan solos en GitHub, en la vista previa de Markdown de VS Code y en IntelliJ.
 El modelo de datos vive aparte, en [`docs/db/entidad-relacion.md`](../db/entidad-relacion.md).
