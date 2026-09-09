@@ -21,10 +21,6 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
 
       <StudentsSearch defaultValue={q ?? ""} />
 
-      <p className={styles.muted}>
-        {padron.length} {padron.length === 1 ? "persona" : "personas"}
-      </p>
-
       <StudentsTable students={padron} />
     </>
   );

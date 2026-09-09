@@ -17,9 +17,7 @@ export function PeopleSearch({ defaultValue }: PeopleSearchProps) {
           placeholder="Buscar por correo o nombre"
           aria-label="Buscar personas por correo o nombre"
         />
-        <Button htmlType="submit" icon={<SearchOutlined />}>
-          Buscar
-        </Button>
+        <Button htmlType="submit" icon={<SearchOutlined />} />
       </Space.Compact>
     </form>
   );

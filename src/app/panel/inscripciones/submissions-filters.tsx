@@ -1,12 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Input, Select } from "antd";
+import { Select } from "antd";
 import { TEMPLATES } from "@/modules/enrollment";
 import type { OfferingView } from "@/modules/enrollment";
 import styles from "./inscripciones.module.scss";
-
-const { Search } = Input;
 
 type SubmissionsFiltersProps = {
   offerings: OfferingView[];
@@ -58,15 +56,6 @@ export function SubmissionsFilters({ offerings, years }: SubmissionsFiltersProps
         onChange={(value?: string) => apply("anio", value)}
         options={years.map((year) => ({ value: String(year), label: String(year) }))}
       />
-
-      <div className={styles.search}>
-        <Search
-          placeholder="Buscar por nombre o DPI"
-          defaultValue={params.get("q") ?? ""}
-          onSearch={(value) => apply("q", value)}
-          allowClear
-        />
-      </div>
     </div>
   );
 }

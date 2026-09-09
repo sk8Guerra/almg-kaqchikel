@@ -2,6 +2,7 @@ import { access, enrollment } from "@/composition/container";
 import { isTemplateCode } from "@/modules/enrollment";
 import { DownloadButton } from "./download-button";
 import { SubmissionsFilters } from "./submissions-filters";
+import { SubmissionsSearch } from "./submissions-search";
 import { SubmissionsTable } from "./submissions-table";
 import styles from "./inscripciones.module.scss";
 
@@ -44,9 +45,11 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
 
       <SubmissionsFilters offerings={offerings} years={years} />
 
-      <p className={styles.muted}>
-        {submissions.length} {submissions.length === 1 ? "inscripción" : "inscripciones"}
-      </p>
+      <div className={styles.tableToolbar}>
+        <div className={styles.search}>
+          <SubmissionsSearch defaultValue={q ?? ""} />
+        </div>
+      </div>
 
       <SubmissionsTable submissions={submissions} />
     </>
