@@ -4,6 +4,7 @@ import { Tag } from "antd";
 import { enrollment, geography } from "@/composition/container";
 import { LEVEL_LABELS, MODALITY_LABELS, TRACK_LABELS } from "@/modules/enrollment";
 import { OfferingNotFoundError, OfferingNotOpenError } from "@/modules/enrollment";
+import { AlreadySubmitted } from "./already-submitted";
 import { EnrollmentForm } from "./enrollment-form";
 import styles from "./inscripcion.module.scss";
 
@@ -26,32 +27,37 @@ export default async function EnrollmentPage({ params }: EnrollmentPageProps) {
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{template.nameKaqchikel}</h1>
-        <p className={styles.muted}>
-          {template.nameSpanish} — {offering.year}
-        </p>
-        <div className={styles.tags}>
-          <Tag color="green">{TRACK_LABELS[offering.track]}</Tag>
-          <Tag color="blue">{LEVEL_LABELS[offering.level]}</Tag>
-          <Tag>{MODALITY_LABELS[offering.modality]}</Tag>
-          <Tag>
-            {offering.municipalityName}, {offering.departmentName}
-          </Tag>
-        </div>
-        {offering.scheduleLabel ? <p>{offering.scheduleLabel}</p> : null}
-        {offering.classesStartOn ? (
+      <AlreadySubmitted
+        offeringId={offering.id}
+        courseLabel={`${template.nameSpanish} — ${offering.municipalityName}, ${offering.year}`}
+      >
+        <header className={styles.header}>
+          <h1 className={styles.title}>{template.nameKaqchikel}</h1>
           <p className={styles.muted}>
-            Inicio de clases: {formatCalendarDate(offering.classesStartOn)}
+            {template.nameSpanish} — {offering.year}
           </p>
-        ) : null}
-        <p className={styles.muted}>
-          Ütz tasik&apos;ij ri k&apos;o qa, k&apos;a ri&apos;, tatz&apos;ib&apos;aj ri nk&apos;utüx
-          chawe. / Lee con atención y escribe lo que se te pide.
-        </p>
-      </header>
+          <div className={styles.tags}>
+            <Tag color="green">{TRACK_LABELS[offering.track]}</Tag>
+            <Tag color="blue">{LEVEL_LABELS[offering.level]}</Tag>
+            <Tag>{MODALITY_LABELS[offering.modality]}</Tag>
+            <Tag>
+              {offering.municipalityName}, {offering.departmentName}
+            </Tag>
+          </div>
+          {offering.scheduleLabel ? <p>{offering.scheduleLabel}</p> : null}
+          {offering.classesStartOn ? (
+            <p className={styles.muted}>
+              Inicio de clases: {formatCalendarDate(offering.classesStartOn)}
+            </p>
+          ) : null}
+          <p className={styles.muted}>
+            Ütz tasik&apos;ij ri k&apos;o qa, k&apos;a ri&apos;, tatz&apos;ib&apos;aj ri
+            nk&apos;utüx chawe. / Lee con atención y escribe lo que se te pide.
+          </p>
+        </header>
 
-      <EnrollmentForm offering={offering} template={template} departments={departments} />
+        <EnrollmentForm offering={offering} template={template} departments={departments} />
+      </AlreadySubmitted>
     </main>
   );
 }
