@@ -150,7 +150,11 @@ nada; degradar a un administrador y comprobar que el sistema exige indicar sus p
 - **FR-008**: El sistema MUST negar por omisión: una persona con rol de miembro no tiene ninguna
   capacidad mientras no se le conceda explícitamente.
 - **FR-009**: El sistema MUST permitir conceder a un miembro cualquier combinación de área y
-  operación.
+  operación **de las que el área declare concedibles**. Un área no MUST ofrecer una operación
+  que ningún permiso puede habilitar.
+- **FR-009a**: El área de personas MUST declarar concedible únicamente la lectura, porque crear,
+  actualizar y desactivar personas es la autoridad que FR-018 reserva a la administración.
+  Ofrecerlas en la matriz sería conceder permisos que se guardan y no habilitan nada.
 - **FR-010**: El sistema MUST exigir al menos una operación concedida para dar de alta a un
   miembro.
 - **FR-011**: El sistema MUST permitir conceder y retirar permisos a un miembro después del alta.

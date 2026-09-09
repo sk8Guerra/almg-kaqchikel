@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Checkbox, Table } from "antd";
+import { Checkbox, Table, Typography } from "antd";
 import type { TableColumnsType } from "antd";
-import { ACTIONS, MODULES } from "@/modules/access";
-import type { ModuleKey } from "@/modules/access";
+import { ACTIONS, MODULES, actionsFor, isKnownPermission } from "@/modules/access";
+import type { Action, ModuleKey } from "@/modules/access";
 import { ACTION_LABELS } from "./permission-labels";
+import styles from "./personas.module.scss";
+
+const { Text } = Typography;
 
 type PermissionRow = {
   moduleKey: ModuleKey;
   label: string;
+  actions: readonly Action[];
 };
 
 type PermissionMatrixProps = {
@@ -19,7 +23,11 @@ type PermissionMatrixProps = {
 };
 
 export function PermissionMatrix({ name, checked = [], disabled = false }: PermissionMatrixProps) {
-  const [granted, setGranted] = useState<ReadonlySet<string>>(new Set(checked));
+  // Un permiso que ya no está en el catálogo se descarta al abrir el formulario: reenviarlo
+  // haría fallar el guardado con UnknownPermissionError.
+  const [granted, setGranted] = useState<ReadonlySet<string>>(
+    () => new Set(checked.filter(isKnownPermission)),
+  );
 
   const toggle = (key: string, isGranted: boolean) => {
     setGranted((current) => {
@@ -33,6 +41,7 @@ export function PermissionMatrix({ name, checked = [], disabled = false }: Permi
   const rows: PermissionRow[] = (Object.keys(MODULES) as ModuleKey[]).map((moduleKey) => ({
     moduleKey,
     label: MODULES[moduleKey].label,
+    actions: actionsFor(moduleKey),
   }));
 
   const columns: TableColumnsType<PermissionRow> = [
@@ -42,6 +51,14 @@ export function PermissionMatrix({ name, checked = [], disabled = false }: Permi
       key: action,
       align: "center" as const,
       render: (_: unknown, row: PermissionRow) => {
+        if (!row.actions.includes(action)) {
+          return (
+            <span className={styles.muted} title="No se puede conceder">
+              —
+            </span>
+          );
+        }
+
         const key = `${row.moduleKey}:${action}`;
         return (
           <Checkbox
@@ -64,6 +81,10 @@ export function PermissionMatrix({ name, checked = [], disabled = false }: Permi
         pagination={false}
         size="small"
       />
+      <Text type="secondary">
+        Sobre personas solo se concede ver. Dar de alta, cambiar roles y desactivar cuentas es
+        exclusivo del rol de administración: esa autoridad no se concede.
+      </Text>
       {[...granted].map((key) => (
         <input key={key} type="hidden" name={name} value={key} />
       ))}

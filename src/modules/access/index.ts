@@ -10,7 +10,13 @@ export { changeRole } from "./application/use-cases/change-role";
 export { deactivatePerson } from "./application/use-cases/deactivate-person";
 export { reactivatePerson } from "./application/use-cases/reactivate-person";
 
-export { MODULES, ACTIONS, ALL_PERMISSION_KEYS, isKnownPermission } from "./domain/modules";
+export {
+  MODULES,
+  ACTIONS,
+  ALL_PERMISSION_KEYS,
+  actionsFor,
+  isKnownPermission,
+} from "./domain/modules";
 export type { Action, ModuleKey, PermissionKey, UserRole } from "./domain/modules";
 export type { User, UserStatus } from "./domain";
 export type { UserId, IdentityId, Email } from "./domain/values";

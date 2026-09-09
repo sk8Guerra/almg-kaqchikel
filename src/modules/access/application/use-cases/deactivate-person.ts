@@ -1,4 +1,6 @@
 import type { Clock } from "@/shared/clock";
+import type { User } from "../../domain/user";
+import { requireAdmin } from "../../domain/authorization";
 import {
   LastAdministratorError,
   SelfDeactivationError,
@@ -19,13 +21,15 @@ type Deps = {
 
 type Input = {
   targetId: UserId;
-  actor: UserId;
+  actor: User;
 };
 
 export const deactivatePerson =
   ({ identity, users, audit, clock }: Deps) =>
   async ({ targetId, actor }: Input): Promise<void> => {
-    if (targetId === actor) throw new SelfDeactivationError();
+    requireAdmin(actor);
+
+    if (targetId === actor.id) throw new SelfDeactivationError();
 
     const target = await users.findById(targetId);
     if (target === null) throw new UserNotProvisionedError();
@@ -38,5 +42,10 @@ export const deactivatePerson =
     const now = clock.now();
     await identity.deactivateIdentity(target.identityId);
     await users.setStatus(targetId, "inactive", now);
-    await recordBestEffort(audit, { type: "USER_DEACTIVATED", actorId: actor, targetId, at: now });
+    await recordBestEffort(audit, {
+      type: "USER_DEACTIVATED",
+      actorId: actor.id,
+      targetId,
+      at: now,
+    });
   };

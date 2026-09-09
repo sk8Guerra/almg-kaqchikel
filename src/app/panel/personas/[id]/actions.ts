@@ -12,6 +12,10 @@ import {
   SelfDemotionError,
 } from "@/modules/access";
 
+// Las claves access:create, access:update y access:delete no están en el catálogo
+// concedible (FR-018, FR-019), así que estas comprobaciones solo las pasa un
+// administrador. La negativa definitiva vive en el caso de uso, con requireAdmin.
+
 export type ActionResult = {
   ok: boolean;
   message: string;
@@ -69,7 +73,7 @@ export async function deactivateAction(formData: FormData): Promise<ActionResult
 
   return handle(async () => {
     const actor = await access.authorize("access:delete");
-    await access.deactivatePerson({ targetId, actor: actor.id });
+    await access.deactivatePerson({ targetId, actor });
   }, "Persona desactivada.");
 }
 
@@ -78,6 +82,6 @@ export async function reactivateAction(formData: FormData): Promise<ActionResult
 
   return handle(async () => {
     const actor = await access.authorize("access:update");
-    await access.reactivatePerson({ targetId, actor: actor.id });
+    await access.reactivatePerson({ targetId, actor });
   }, "Persona reactivada.");
 }

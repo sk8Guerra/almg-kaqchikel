@@ -46,7 +46,7 @@ describe("listAccessibleModules — la barra lateral muestra solo lo permitido (
 
   it("un member con permisos que no son de lectura no recibe el area", async () => {
     const person = aUser({ identityId: identityId("clerk_writer") });
-    users.seed(person, ["access:update"]);
+    users.seed(person, ["enrollment:update"]);
     identity.set(anIdentity({ identityId: person.identityId }));
 
     expect(await run()).toEqual([]);

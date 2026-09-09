@@ -12,6 +12,10 @@ import {
   PermissionDeniedError,
 } from "@/modules/access";
 
+// Las claves access:create, access:update y access:delete no están en el catálogo
+// concedible (FR-018, FR-019), así que estas comprobaciones solo las pasa un
+// administrador. La negativa definitiva vive en el caso de uso, con requireAdmin.
+
 export type ActionResult = {
   ok: boolean;
   message: string;

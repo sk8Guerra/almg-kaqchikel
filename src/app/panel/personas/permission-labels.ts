@@ -1,4 +1,4 @@
-import { MODULES } from "@/modules/access";
+import { MODULES, isKnownPermission } from "@/modules/access";
 import type { Action, ModuleKey } from "@/modules/access";
 
 export const ACTION_LABELS: Record<Action, string> = {
@@ -8,12 +8,12 @@ export const ACTION_LABELS: Record<Action, string> = {
   delete: "Eliminar",
 };
 
-const isModuleKey = (value: string): value is ModuleKey => value in MODULES;
-
-const isAction = (value: string): value is Action => value in ACTION_LABELS;
-
+/**
+ * Un permiso concedido antes de que su área dejara de ofrecerlo sigue guardado y ya no
+ * habilita nada (SC-008). Se etiqueta como tal en vez de fingir que sigue vigente.
+ */
 export const permissionLabel = (key: string): string => {
-  const [moduleKey, action] = key.split(":");
-  if (!isModuleKey(moduleKey) || !isAction(action)) return key;
+  if (!isKnownPermission(key)) return `${key} (sin efecto)`;
+  const [moduleKey, action] = key.split(":") as [ModuleKey, Action];
   return `${MODULES[moduleKey].label} — ${ACTION_LABELS[action]}`;
 };

@@ -48,7 +48,7 @@ async function main() {
 
   await changePermissions({ users, audit, clock })({
     targetId: member.id,
-    grant: ["access:create"] as PermissionKey[],
+    grant: ["enrollment:create"] as PermissionKey[],
     revoke: [],
     actor,
   });

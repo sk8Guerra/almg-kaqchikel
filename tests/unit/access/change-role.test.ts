@@ -55,11 +55,11 @@ describe("changeRole — degradación (FR-016)", () => {
     await changeRole(d)({
       targetId: other,
       role: "member",
-      permissionKeys: ["access:create"] as PermissionKey[],
+      permissionKeys: ["enrollment:create"] as PermissionKey[],
       actor,
     });
 
-    expect(await d.users.listPermissions(other)).toEqual(new Set(["access:create"]));
+    expect(await d.users.listPermissions(other)).toEqual(new Set(["enrollment:create"]));
   });
 });
 
