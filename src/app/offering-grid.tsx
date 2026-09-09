@@ -3,6 +3,7 @@
 import { useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Button, Card, Empty, Tag, Typography } from "antd";
+import { formatCalendarDate } from "@/shared/calendar-date";
 import type { OfferingView } from "@/modules/enrollment";
 import { LEVEL_LABELS, MODALITY_LABELS, TRACK_LABELS } from "@/modules/enrollment";
 import {
@@ -80,7 +81,7 @@ export function OfferingGrid({ offerings }: OfferingGridProps) {
                 {offering.scheduleLabel ? <Text>{offering.scheduleLabel}</Text> : null}
                 {offering.classesStartOn ? (
                   <Text type="secondary">
-                    Inicio de clases: {dateFormatter.format(offering.classesStartOn)}
+                    Inicio de clases: {formatCalendarDate(offering.classesStartOn)}
                   </Text>
                 ) : null}
                 <Text type="secondary">

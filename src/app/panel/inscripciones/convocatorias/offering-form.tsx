@@ -8,7 +8,7 @@ import { TEMPLATES } from "@/modules/enrollment";
 import type { Modality, OfferingView } from "@/modules/enrollment";
 import { DEPARTMENTS, MUNICIPALITIES } from "@/modules/geography";
 import { createOfferingAction, updateOfferingAction } from "./actions";
-import { localDateField, localDateTimeFields } from "./local-time";
+import { localDateTimeFields } from "./local-time";
 import styles from "../inscripciones.module.scss";
 
 const { Text } = Typography;
@@ -44,9 +44,7 @@ export function OfferingForm({ offering, trigger = "button" }: OfferingFormProps
   const opens = offering ? localDateTimeFields(offering.opensAt) : null;
   const closes = offering ? localDateTimeFields(offering.closesAt) : null;
 
-  const [classesStartOn, setClassesStartOn] = useState(
-    localDateField(offering?.classesStartOn ?? null),
-  );
+  const [classesStartOn, setClassesStartOn] = useState(offering?.classesStartOn ?? "");
   const [opensOn, setOpensOn] = useState(opens?.day ?? "");
   const [opensAtTime, setOpensAtTime] = useState(opens?.time ?? "08:00");
   const [closesOn, setClosesOn] = useState(closes?.day ?? "");

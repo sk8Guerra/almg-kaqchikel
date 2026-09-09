@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@/shared/calendar-date";
 import type { Offering, OfferingStatus } from "../../domain/offering";
 import type { TemplateCode } from "../../domain/form-template";
 import type { Modality } from "../../domain/values";
@@ -19,7 +20,7 @@ export type NewOffering = {
   readonly modality: Modality;
   readonly opensAt: Date;
   readonly closesAt: Date;
-  readonly classesStartOn: Date | null;
+  readonly classesStartOn: CalendarDate | null;
   readonly scheduleLabel: string | null;
   readonly createdById: string;
 };
@@ -31,7 +32,7 @@ export type OfferingPatch = {
   readonly modality?: Modality;
   readonly opensAt?: Date;
   readonly closesAt?: Date;
-  readonly classesStartOn?: Date | null;
+  readonly classesStartOn?: CalendarDate | null;
   readonly scheduleLabel?: string | null;
 };
 

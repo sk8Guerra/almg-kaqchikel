@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/shared/calendar-date";
 import { notFound } from "next/navigation";
 import { Tag } from "antd";
 import { enrollment, geography } from "@/composition/container";
@@ -5,13 +6,6 @@ import { LEVEL_LABELS, MODALITY_LABELS, TRACK_LABELS } from "@/modules/enrollmen
 import { OfferingNotFoundError, OfferingNotOpenError } from "@/modules/enrollment";
 import { EnrollmentForm } from "./enrollment-form";
 import styles from "./inscripcion.module.scss";
-
-const dateFormatter = new Intl.DateTimeFormat("es-GT", {
-  timeZone: "America/Guatemala",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
 
 type EnrollmentPageProps = {
   params: Promise<{ offeringId: string }>;
@@ -48,7 +42,7 @@ export default async function EnrollmentPage({ params }: EnrollmentPageProps) {
         {offering.scheduleLabel ? <p>{offering.scheduleLabel}</p> : null}
         {offering.classesStartOn ? (
           <p className={styles.muted}>
-            Inicio de clases: {dateFormatter.format(offering.classesStartOn)}
+            Inicio de clases: {formatCalendarDate(offering.classesStartOn)}
           </p>
         ) : null}
         <p className={styles.muted}>

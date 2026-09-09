@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@/shared/calendar-date";
 import type { Clock } from "@/shared/clock";
 import { templateByCode } from "../../domain/form-template";
 import type { TemplateCode } from "../../domain/form-template";
@@ -16,7 +17,7 @@ type Input = {
   modality: Modality;
   opensAt: Date;
   closesAt: Date;
-  classesStartOn?: Date | null;
+  classesStartOn?: CalendarDate | null;
   scheduleLabel?: string | null;
   createdById: string;
 };

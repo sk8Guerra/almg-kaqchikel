@@ -5,7 +5,7 @@ import { access } from "@/composition/container";
 import { enrollment } from "@/composition/container";
 import { PermissionDeniedError } from "@/modules/access";
 import type { Modality } from "@/modules/enrollment";
-import { localDate, localDateTime } from "./local-time";
+import { localDateTime } from "./local-time";
 import {
   DuplicateOfferingError,
   InvalidOfferingWindowError,
@@ -75,7 +75,7 @@ export async function createOfferingAction(input: OfferingInput): Promise<Action
       modality: input.modality,
       opensAt: localDateTime(input.opensOn, input.opensAtTime),
       closesAt: localDateTime(input.closesOn, input.closesAtTime),
-      classesStartOn: localDate(input.classesStartOn),
+      classesStartOn: input.classesStartOn,
       scheduleLabel: input.scheduleLabel,
       createdById: actor.id,
     });
@@ -99,7 +99,7 @@ export async function updateOfferingAction(
       modality: input.modality,
       opensAt: localDateTime(input.opensOn, input.opensAtTime),
       closesAt: localDateTime(input.closesOn, input.closesAtTime),
-      classesStartOn: localDate(input.classesStartOn),
+      classesStartOn: input.classesStartOn,
       scheduleLabel: input.scheduleLabel,
     });
     revalidatePath("/panel/inscripciones/convocatorias");

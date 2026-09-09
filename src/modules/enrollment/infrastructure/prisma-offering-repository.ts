@@ -1,3 +1,4 @@
+import { fromCalendarDate, toCalendarDate } from "@/shared/calendar-date";
 import type { PrismaClient } from "@generated/client/client";
 import { isTemplateCode } from "../domain/form-template";
 import type { TemplateCode } from "../domain/form-template";
@@ -47,7 +48,7 @@ const toDomain = (row: OfferingRow): Offering => ({
   modality: modalityToDomain(row.modality),
   opensAt: row.opensAt,
   closesAt: row.closesAt,
-  classesStartOn: row.classesStartOn,
+  classesStartOn: row.classesStartOn === null ? null : toCalendarDate(row.classesStartOn),
   scheduleLabel: row.scheduleLabel,
   isActive: row.isActive,
   createdById: row.createdById,
@@ -76,7 +77,8 @@ export class PrismaOfferingRepository implements OfferingRepository {
         modality: modalityToRow(input.modality),
         opensAt: input.opensAt,
         closesAt: input.closesAt,
-        classesStartOn: input.classesStartOn,
+        classesStartOn:
+          input.classesStartOn === null ? null : fromCalendarDate(input.classesStartOn),
         scheduleLabel: input.scheduleLabel,
         createdById: input.createdById,
       },
@@ -95,7 +97,10 @@ export class PrismaOfferingRepository implements OfferingRepository {
         modality: patch.modality ? modalityToRow(patch.modality) : undefined,
         opensAt: patch.opensAt,
         closesAt: patch.closesAt,
-        classesStartOn: patch.classesStartOn,
+        classesStartOn:
+          patch.classesStartOn == null
+            ? patch.classesStartOn
+            : fromCalendarDate(patch.classesStartOn),
         scheduleLabel: patch.scheduleLabel,
       },
       include: { formTemplate: { select: { code: true } } },

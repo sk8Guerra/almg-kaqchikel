@@ -16,9 +16,6 @@ const OFFSET = `${OFFSET_MINUTES < 0 ? "-" : "+"}${pad(
 export const localDateTime = (day: string, time: string): Date =>
   new Date(`${day}T${time}:00.000${OFFSET}`);
 
-export const localDate = (day: string | null): Date | null =>
-  day ? new Date(`${day}T00:00:00.000${OFFSET}`) : null;
-
 /**
  * Inverso de localDateTime. Desplaza el instante y lee en UTC en vez de usar los
  * getters locales, que darían la hora de quien mira y no la de Guatemala.
@@ -30,7 +27,3 @@ export const localDateTimeFields = (date: Date): { day: string; time: string } =
     time: `${pad(local.getUTCHours())}:${pad(local.getUTCMinutes())}`,
   };
 };
-
-/** Inverso de localDate. Cadena vacía es lo que un input de fecha entiende por «sin valor». */
-export const localDateField = (date: Date | null): string =>
-  date ? localDateTimeFields(date).day : "";

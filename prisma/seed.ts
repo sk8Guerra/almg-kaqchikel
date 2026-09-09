@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { toCalendarDate } from "@/shared/calendar-date";
 import { prisma } from "@/composition/prisma";
 import { enrollment, geography } from "@/composition/container";
 import type { Modality, TemplateCode } from "@/modules/enrollment";
@@ -68,7 +69,7 @@ async function createDemoOffering(municipalityCode: string) {
     modality,
     opensAt: new Date(now.getTime() - 24 * 60 * 60 * 1000),
     closesAt: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-    classesStartOn: new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000),
+    classesStartOn: toCalendarDate(new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000)),
     scheduleLabel: "Martes de 14:00 a 16:30 horas",
     createdById: admin.id,
   });

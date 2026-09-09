@@ -1,3 +1,4 @@
+import type { CalendarDate } from "@/shared/calendar-date";
 import { InvalidOfferingWindowError, InvalidOfferingYearError } from "./errors";
 import type { FormTemplateDefinition, TemplateCode } from "./form-template";
 import type { CourseLevel, LanguageTrack, Modality } from "./values";
@@ -12,7 +13,8 @@ export type Offering = {
   readonly modality: Modality;
   readonly opensAt: Date;
   readonly closesAt: Date;
-  readonly classesStartOn: Date | null;
+  // Un día del calendario, no un instante: ver CalendarDate.
+  readonly classesStartOn: CalendarDate | null;
   readonly scheduleLabel: string | null;
   readonly isActive: boolean;
   readonly createdById: string;
