@@ -67,7 +67,7 @@ type OfferingInput = {
 
 export async function createOfferingAction(input: OfferingInput): Promise<ActionResult> {
   try {
-    const actor = await access.authorize("enrollment:create");
+    const actor = await access.authorize("offering:create");
     await enrollment.createOffering({
       templateCode: input.templateCode,
       year: input.year,
@@ -79,7 +79,7 @@ export async function createOfferingAction(input: OfferingInput): Promise<Action
       scheduleLabel: input.scheduleLabel,
       createdById: actor.id,
     });
-    revalidatePath("/panel/inscripciones/convocatorias");
+    revalidatePath("/panel/convocatorias");
     revalidatePath("/");
     return { ok: true, message: "Convocatoria creada." };
   } catch (error) {
@@ -92,7 +92,7 @@ export async function updateOfferingAction(
   input: OfferingInput,
 ): Promise<ActionResult> {
   try {
-    await access.authorize("enrollment:update");
+    await access.authorize("offering:update");
     await enrollment.updateOffering(id, {
       year: input.year,
       municipalityCode: input.municipalityCode,
@@ -102,7 +102,7 @@ export async function updateOfferingAction(
       classesStartOn: input.classesStartOn,
       scheduleLabel: input.scheduleLabel,
     });
-    revalidatePath("/panel/inscripciones/convocatorias");
+    revalidatePath("/panel/convocatorias");
     revalidatePath("/");
     return { ok: true, message: "Convocatoria actualizada." };
   } catch (error) {
@@ -115,9 +115,9 @@ export async function setOfferingActiveAction(
   isActive: boolean,
 ): Promise<ActionResult> {
   try {
-    await access.authorize("enrollment:update");
+    await access.authorize("offering:update");
     await enrollment.setOfferingActive(id, isActive);
-    revalidatePath("/panel/inscripciones/convocatorias");
+    revalidatePath("/panel/convocatorias");
     revalidatePath("/");
     return {
       ok: true,

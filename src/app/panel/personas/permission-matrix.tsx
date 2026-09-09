@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Checkbox, Table, Typography } from "antd";
 import type { TableColumnsType } from "antd";
-import { ACTIONS, MODULES, actionsFor, isKnownPermission } from "@/modules/access";
+import { GRANTABLE_ACTIONS, MODULES, actionsFor, isKnownPermission } from "@/modules/access";
 import type { Action, ModuleKey } from "@/modules/access";
 import { ACTION_LABELS } from "./permission-labels";
 import styles from "./personas.module.scss";
@@ -46,7 +46,7 @@ export function PermissionMatrix({ name, checked = [], disabled = false }: Permi
 
   const columns: TableColumnsType<PermissionRow> = [
     { title: "Área", dataIndex: "label", key: "label" },
-    ...ACTIONS.map((action) => ({
+    ...GRANTABLE_ACTIONS.map((action) => ({
       title: ACTION_LABELS[action],
       key: action,
       align: "center" as const,

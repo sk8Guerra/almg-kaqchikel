@@ -7,7 +7,6 @@ import styles from "./inscripciones.module.scss";
 
 const TABS = [
   { key: "/panel/inscripciones", label: "Inscripciones" },
-  { key: "/panel/inscripciones/convocatorias", label: "Convocatorias" },
   { key: "/panel/inscripciones/resumen", label: "Resumen" },
 ];
 

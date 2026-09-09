@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  localDateTime,
-  localDateTimeFields,
-} from "@/app/panel/inscripciones/convocatorias/local-time";
+import { localDateTime, localDateTimeFields } from "@/app/panel/convocatorias/local-time";
 
 /**
  * Apertura y cierre sí son instantes: el formulario los escribe en hora de Guatemala y el

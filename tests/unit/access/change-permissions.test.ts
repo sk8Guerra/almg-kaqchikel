@@ -21,13 +21,13 @@ describe("changePermissions (US3, FR-011…FR-013)", () => {
     const d = setup();
     await changePermissions(d)({
       targetId: target,
-      grant: ["enrollment:create"] as PermissionKey[],
+      grant: ["offering:create"] as PermissionKey[],
       revoke: [],
       actor,
     });
 
     expect(await d.users.listPermissions(target)).toEqual(
-      new Set(["access:read", "enrollment:create"]),
+      new Set(["access:read", "offering:create"]),
     );
   });
 
@@ -35,12 +35,12 @@ describe("changePermissions (US3, FR-011…FR-013)", () => {
     const d = setup();
     await changePermissions(d)({
       targetId: target,
-      grant: ["enrollment:create"] as PermissionKey[],
+      grant: ["offering:create"] as PermissionKey[],
       revoke: ["access:read"] as PermissionKey[],
       actor,
     });
 
-    expect(await d.users.listPermissions(target)).toEqual(new Set(["enrollment:create"]));
+    expect(await d.users.listPermissions(target)).toEqual(new Set(["offering:create"]));
   });
 
   it("conceder dos veces no duplica (FR-012)", async () => {

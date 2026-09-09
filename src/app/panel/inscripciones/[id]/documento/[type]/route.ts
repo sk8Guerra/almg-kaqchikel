@@ -13,7 +13,7 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string; type: string }> },
 ): Promise<Response> {
-  await access.authorize("enrollment:read");
+  await access.authorize("enrollment:download");
 
   const { id, type } = await params;
   if (!isDocumentType(type)) return new Response("Documento desconocido", { status: 404 });

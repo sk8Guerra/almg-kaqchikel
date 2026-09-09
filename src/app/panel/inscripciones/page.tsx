@@ -12,6 +12,7 @@ type SubmissionsPageProps = {
 
 export default async function SubmissionsPage({ searchParams }: SubmissionsPageProps) {
   await access.authorize("enrollment:read");
+  const canDownload = await access.can("enrollment:download");
 
   const { convocatoria, curso, anio, q } = await searchParams;
   const year = anio ? Number(anio) : undefined;
@@ -37,10 +38,12 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
     <>
       <div className={styles.header}>
         <h1 className={styles.title}>Inscripciones</h1>
-        <DownloadButton
-          href={`/panel/inscripciones/exportar?${exportParams.toString()}`}
-          label="Exportar"
-        />
+        {canDownload ? (
+          <DownloadButton
+            href={`/panel/inscripciones/exportar?${exportParams.toString()}`}
+            label="Exportar"
+          />
+        ) : null}
       </div>
 
       <SubmissionsFilters offerings={offerings} years={years} />

@@ -9,7 +9,7 @@ import type { Modality, OfferingView } from "@/modules/enrollment";
 import { DEPARTMENTS, MUNICIPALITIES } from "@/modules/geography";
 import { createOfferingAction, updateOfferingAction } from "./actions";
 import { localDateTimeFields } from "./local-time";
-import styles from "../inscripciones.module.scss";
+import styles from "./convocatorias.module.scss";
 
 const { Text } = Typography;
 

@@ -28,6 +28,7 @@ type SubmissionPageProps = {
 
 export default async function SubmissionPage({ params }: SubmissionPageProps) {
   await access.authorize("enrollment:read");
+  const canDownload = await access.can("enrollment:download");
   const { id } = await params;
 
   const submission = await enrollment.getSubmission(id).catch((error: unknown) => {
@@ -98,12 +99,14 @@ export default async function SubmissionPage({ params }: SubmissionPageProps) {
           items={submission.documents.map((document) => ({
             key: document.type,
             label: DOCUMENT_LABELS[document.type],
-            children: (
+            children: canDownload ? (
               <DownloadButton
                 href={`/panel/inscripciones/${submission.id}/documento/${document.type}`}
                 label={`Descargar (${kilobytes(document.sizeBytes)})`}
                 variant="link"
               />
+            ) : (
+              <span className={styles.muted}>{kilobytes(document.sizeBytes)} — sin permiso</span>
             ),
           }))}
         />

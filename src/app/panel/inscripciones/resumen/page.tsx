@@ -11,6 +11,7 @@ type SummaryPageProps = {
 
 export default async function SummaryPage({ searchParams }: SummaryPageProps) {
   await access.authorize("enrollment:read");
+  const canDownload = await access.can("enrollment:download");
 
   const { anio, convocatoria } = await searchParams;
   const year = anio ? Number(anio) : undefined;
@@ -31,10 +32,12 @@ export default async function SummaryPage({ searchParams }: SummaryPageProps) {
     <>
       <div className={styles.header}>
         <h1 className={styles.title}>Resumen</h1>
-        <DownloadButton
-          href={`/panel/inscripciones/exportar?${exportParams.toString()}`}
-          label="Descargar detalle"
-        />
+        {canDownload ? (
+          <DownloadButton
+            href={`/panel/inscripciones/exportar?${exportParams.toString()}`}
+            label="Descargar detalle"
+          />
+        ) : null}
       </div>
 
       <SummaryFilters offerings={offerings} years={years} />

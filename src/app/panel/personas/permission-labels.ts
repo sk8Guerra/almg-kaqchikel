@@ -6,6 +6,7 @@ export const ACTION_LABELS: Record<Action, string> = {
   create: "Crear",
   update: "Editar",
   delete: "Eliminar",
+  download: "Descargar",
 };
 
 /**

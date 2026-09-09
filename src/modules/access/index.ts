@@ -14,6 +14,7 @@ export {
   MODULES,
   ACTIONS,
   ALL_PERMISSION_KEYS,
+  GRANTABLE_ACTIONS,
   actionsFor,
   isKnownPermission,
 } from "./domain/modules";

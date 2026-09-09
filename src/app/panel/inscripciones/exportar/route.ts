@@ -9,7 +9,7 @@ const toCsv = (headers: string[], rows: string[][]): string =>
   [headers, ...rows].map((row) => row.map(escapeCell).join(",")).join("\r\n");
 
 export async function GET(request: Request): Promise<Response> {
-  await access.authorize("enrollment:read");
+  await access.authorize("enrollment:download");
 
   const params = new URL(request.url).searchParams;
   const year = params.get("anio") ? Number(params.get("anio")) : undefined;
