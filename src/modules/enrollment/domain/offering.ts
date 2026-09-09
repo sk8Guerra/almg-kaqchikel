@@ -65,7 +65,14 @@ export const buildOfferingView = (input: {
   submissionCount: input.submissionCount,
 });
 
+/**
+ * La comprobación de orden no basta: una fecha inválida da NaN, y toda comparación con NaN
+ * es falsa, así que la ventana pasaba entera y reventaba después en la base de datos.
+ */
 export const assertValidWindow = (opensAt: Date, closesAt: Date): void => {
+  if (Number.isNaN(opensAt.getTime()) || Number.isNaN(closesAt.getTime())) {
+    throw new InvalidOfferingWindowError();
+  }
   if (closesAt.getTime() <= opensAt.getTime()) throw new InvalidOfferingWindowError();
 };
 

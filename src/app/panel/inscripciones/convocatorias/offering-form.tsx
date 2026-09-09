@@ -8,6 +8,7 @@ import { TEMPLATES } from "@/modules/enrollment";
 import type { Modality, OfferingView } from "@/modules/enrollment";
 import { DEPARTMENTS, MUNICIPALITIES } from "@/modules/geography";
 import { createOfferingAction, updateOfferingAction } from "./actions";
+import { localDateField, localDateTimeFields } from "./local-time";
 import styles from "../inscripciones.module.scss";
 
 const { Text } = Typography;
@@ -37,11 +38,19 @@ export function OfferingForm({ offering, trigger = "button" }: OfferingFormProps
   const [templateCode, setTemplateCode] = useState(offering?.templateCode ?? TEMPLATES[0].code);
   const [modality, setModality] = useState<Modality>(offering?.modality ?? "virtual");
   const [year, setYear] = useState(offering?.year ?? new Date().getFullYear());
-  const [classesStartOn, setClassesStartOn] = useState("");
-  const [opensOn, setOpensOn] = useState("");
-  const [opensAtTime, setOpensAtTime] = useState("08:00");
-  const [closesOn, setClosesOn] = useState("");
-  const [closesAtTime, setClosesAtTime] = useState("23:59");
+  // Al editar, los cinco campos de fecha y hora se siembran desde la convocatoria: si no,
+  // el formulario los muestra vacíos y hay que volver a teclearlos para cambiar cualquier
+  // otra cosa.
+  const opens = offering ? localDateTimeFields(offering.opensAt) : null;
+  const closes = offering ? localDateTimeFields(offering.closesAt) : null;
+
+  const [classesStartOn, setClassesStartOn] = useState(
+    localDateField(offering?.classesStartOn ?? null),
+  );
+  const [opensOn, setOpensOn] = useState(opens?.day ?? "");
+  const [opensAtTime, setOpensAtTime] = useState(opens?.time ?? "08:00");
+  const [closesOn, setClosesOn] = useState(closes?.day ?? "");
+  const [closesAtTime, setClosesAtTime] = useState(closes?.time ?? "23:59");
   const [scheduleLabel, setScheduleLabel] = useState(offering?.scheduleLabel ?? "");
   const [departmentCode, setDepartmentCode] = useState(
     offering ? departmentOf(offering.municipalityCode) : "",

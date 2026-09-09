@@ -5,6 +5,7 @@ import { access } from "@/composition/container";
 import { enrollment } from "@/composition/container";
 import { PermissionDeniedError } from "@/modules/access";
 import type { Modality } from "@/modules/enrollment";
+import { localDate, localDateTime } from "./local-time";
 import {
   DuplicateOfferingError,
   InvalidOfferingWindowError,
@@ -18,14 +19,6 @@ export type ActionResult = {
   ok: boolean;
   message: string;
 };
-
-const GUATEMALA_OFFSET = "-06:00";
-
-const localDateTime = (date: string, time: string): Date =>
-  new Date(`${date}T${time}:00.000${GUATEMALA_OFFSET}`);
-
-const localDate = (date: string | null): Date | null =>
-  date ? new Date(`${date}T00:00:00.000${GUATEMALA_OFFSET}`) : null;
 
 const describe = (error: unknown): ActionResult => {
   if (error instanceof PermissionDeniedError) {

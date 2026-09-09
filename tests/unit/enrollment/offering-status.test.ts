@@ -45,6 +45,18 @@ describe("estado derivado de la convocatoria (FR-008, FR-012, FR-014)", () => {
     expect(() => assertValidWindow(window.opensAt, window.closesAt)).not.toThrow();
   });
 
+  /**
+   * Una fecha inválida da NaN y toda comparación con NaN es falsa, así que sin esta guarda
+   * la ventana pasaba entera y el fallo aparecía después, al escribir en la base de datos.
+   */
+  it("rechaza una ventana con fechas inválidas", () => {
+    const invalid = new Date("");
+
+    expect(() => assertValidWindow(invalid, invalid)).toThrow(InvalidOfferingWindowError);
+    expect(() => assertValidWindow(invalid, window.closesAt)).toThrow(InvalidOfferingWindowError);
+    expect(() => assertValidWindow(window.opensAt, invalid)).toThrow(InvalidOfferingWindowError);
+  });
+
   it("rechaza años fuera de rango", () => {
     const now = new Date("2026-08-27T12:00:00.000Z");
     expect(() => assertValidYear(2019, now)).toThrow(InvalidOfferingYearError);
