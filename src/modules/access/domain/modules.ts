@@ -8,15 +8,23 @@ type ModuleDefinition = {
 };
 
 /**
- * FR-018, FR-019. El área de personas solo concede lectura. Dar de alta, cambiar roles,
- * conceder permisos y desactivar cuentas es autoridad del rol de administración, y la
- * autoridad no se concede: ofrecer `access:create` en la matriz sería un permiso que se
- * guarda y no habilita nada.
+ * Un área declara solo las operaciones que se pueden conceder de verdad. Una que se marca,
+ * se guarda y no habilita nada es un permiso que miente, y cuesta una sesión de QA
+ * descubrirlo. Hay dos motivos para que una operación no esté aquí:
+ *
+ * - Personas: nunca lo estará. Dar de alta, cambiar roles y desactivar cuentas es la
+ *   autoridad que FR-018 y FR-019 reservan a la administración, y la autoridad no se
+ *   concede. Solo queda `read`.
+ * - Estudiantes e inscripciones: todavía no. El sistema aún no sabe editar ni borrar un
+ *   estudiante, ni borrar una convocatoria.
+ *
+ * La regla para el segundo caso: la operación vuelve al catálogo en el mismo commit que
+ * trae la pantalla que protege, no antes. `permissions-are-enforced.test.ts` lo comprueba.
  */
 export const MODULES = {
   access: { label: "Personas", actions: ["read"] },
-  enrollment: { label: "Inscripciones", actions: ACTIONS },
-  students: { label: "Estudiantes", actions: ACTIONS },
+  enrollment: { label: "Inscripciones", actions: ["read", "create", "update"] },
+  students: { label: "Estudiantes", actions: ["read"] },
 } as const satisfies Record<string, ModuleDefinition>;
 
 export type ModuleKey = keyof typeof MODULES;

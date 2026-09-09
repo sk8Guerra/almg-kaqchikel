@@ -82,8 +82,9 @@ export function PermissionMatrix({ name, checked = [], disabled = false }: Permi
         size="small"
       />
       <Text type="secondary">
-        Sobre personas solo se concede ver. Dar de alta, cambiar roles y desactivar cuentas es
-        exclusivo del rol de administración: esa autoridad no se concede.
+        Un guion es una operación que no se puede conceder. Sobre personas nunca: dar de alta,
+        cambiar roles y desactivar cuentas es exclusivo del rol de administración. En las demás
+        áreas, porque el sistema todavía no sabe hacerla.
       </Text>
       {[...granted].map((key) => (
         <input key={key} type="hidden" name={name} value={key} />
