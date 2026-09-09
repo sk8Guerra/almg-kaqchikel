@@ -53,3 +53,11 @@
 .muted {
   opacity: 0.72;
 }
+
+// La tabla se dibuja a ancho de contenido: sin un tope, la lista de permisos la desplaza
+// en horizontal por sí sola.
+.permissions {
+  display: inline-block;
+  max-width: 26rem;
+  white-space: normal;
+}
