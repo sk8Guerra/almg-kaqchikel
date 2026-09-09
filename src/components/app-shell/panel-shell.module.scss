@@ -1,4 +1,9 @@
-.shell {
+// Antd emite sus reglas con una sola clase —.ant-layout, .ant-layout-sider— y las inyecta
+// con cssinjs al renderizar, o sea después de esta hoja. Una clase nuestra a secas empata en
+// especificidad y pierde por orden: min-height caía contra `min-height: 0` y position contra
+// `position: relative`, que es por qué la barra lateral no se quedaba fija. Componer con la
+// clase de antd sube la especificidad y deja de depender del orden de inyección.
+.shell:global(.ant-layout) {
   min-height: 100dvh;
 }
 
@@ -39,7 +44,7 @@
   font-size: 0.875rem;
 }
 
-.sider {
+.sider:global(.ant-layout-sider) {
   position: sticky;
   top: 0;
   height: 100dvh;
@@ -54,16 +59,11 @@
   height: 100%;
 }
 
-// El armazón nunca se desplaza en horizontal: si lo hiciera, la barra lateral —que es
-// sticky solo en vertical— se saldría de la pantalla y la página quedaría descuadrada.
-// Lo que no cabe se desplaza dentro de esta columna, no arrastrando el documento entero.
 .content {
   padding: 2rem;
   max-width: 64rem;
   margin: 0 auto;
   width: 100%;
-  min-width: 0;
-  overflow-x: auto;
 }
 
 @media (max-width: 48rem) {
