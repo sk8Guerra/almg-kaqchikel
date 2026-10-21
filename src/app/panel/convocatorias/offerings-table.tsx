@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { App, Button, Popconfirm, Table, Tag, Typography } from "antd";
+import { App, Button, Popconfirm, Table, Tag } from "antd";
 import type { TableColumnsType } from "antd";
 import type { OfferingStatus, OfferingView } from "@/modules/enrollment";
 import { MODALITY_LABELS } from "@/modules/enrollment";
 import { OfferingForm } from "./offering-form";
 import { setOfferingActiveAction } from "./actions";
-
-const { Text } = Typography;
 
 const dateTimeFormatter = new Intl.DateTimeFormat("es-GT", {
   timeZone: "America/Guatemala",
@@ -58,7 +56,6 @@ export function OfferingsTable({ offerings, canEdit }: OfferingsTableProps) {
       render: (_, offering) => (
         <>
           <div>{offering.templateNameSpanish}</div>
-          <Text type="secondary">{offering.templateNameKaqchikel}</Text>
         </>
       ),
     },

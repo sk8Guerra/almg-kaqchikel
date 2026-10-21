@@ -66,8 +66,6 @@ export function OfferingGrid({ offerings }: OfferingGridProps) {
         return (
           <Card key={offering.id} title={offering.templateNameSpanish}>
             <div className={styles.cardBody}>
-              <Text type="secondary">{offering.templateNameKaqchikel}</Text>
-
               <div className={styles.tags}>
                 <Tag color="green">{TRACK_LABELS[offering.track]}</Tag>
                 <Tag color="blue">{LEVEL_LABELS[offering.level]}</Tag>

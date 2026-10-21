@@ -39,7 +39,7 @@ export default async function SubmissionPage({ params }: SubmissionPageProps) {
   const labelOf = (questionId: string, value: string): string => {
     const question = BASE_QUESTIONS.find((candidate) => candidate.id === questionId);
     const option = question?.options?.find((candidate) => candidate.value === value);
-    return option ? `${option.labelKaqchikel} / ${option.labelSpanish}` : value;
+    return option ? option.labelSpanish : value;
   };
 
   return (
