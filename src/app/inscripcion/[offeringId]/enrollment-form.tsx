@@ -140,7 +140,7 @@ export function EnrollmentForm({ offering, template, departments }: EnrollmentFo
           >
             {(question.options ?? []).map((option) => (
               <Radio key={option.value} value={option.value}>
-                {option.labelKaqchikel} / {option.labelSpanish}
+                {option.labelSpanish}
               </Radio>
             ))}
           </Radio.Group>
@@ -207,10 +207,10 @@ export function EnrollmentForm({ offering, template, departments }: EnrollmentFo
             >
               {(question.options ?? []).map((option) => (
                 <Radio key={option.value} value={option.value}>
-                  {option.labelKaqchikel} / {option.labelSpanish}
+                  {option.labelSpanish}
                 </Radio>
               ))}
-              <Radio value={OTHER_LANGUAGE}>Ch&apos;aqa chik / Otro</Radio>
+              <Radio value={OTHER_LANGUAGE}>Otro</Radio>
             </Radio.Group>
             {mode === OTHER_LANGUAGE && !known ? (
               <Input
@@ -262,7 +262,7 @@ export function EnrollmentForm({ offering, template, departments }: EnrollmentFo
           <div key={question.id} className={styles.question}>
             <div className={styles.label}>
               <Text strong>
-                {question.labelKaqchikel} / {question.labelSpanish}
+                {question.labelSpanish}
                 {question.required ? <span className={styles.required}> *</span> : null}
               </Text>
               {question.hint ? <Text type="secondary">{question.hint}</Text> : null}

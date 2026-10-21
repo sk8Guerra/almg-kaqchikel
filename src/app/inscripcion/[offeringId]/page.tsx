@@ -32,10 +32,8 @@ export default async function EnrollmentPage({ params }: EnrollmentPageProps) {
         courseLabel={`${template.nameSpanish} — ${offering.municipalityName}, ${offering.year}`}
       >
         <header className={styles.header}>
-          <h1 className={styles.title}>{template.nameKaqchikel}</h1>
-          <p className={styles.muted}>
-            {template.nameSpanish} — {offering.year}
-          </p>
+          <h1 className={styles.title}>{template.nameSpanish}</h1>
+          <p className={styles.muted}>{offering.year}</p>
           <div className={styles.tags}>
             <Tag color="green">{TRACK_LABELS[offering.track]}</Tag>
             <Tag color="blue">{LEVEL_LABELS[offering.level]}</Tag>
