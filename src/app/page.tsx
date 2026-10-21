@@ -13,7 +13,7 @@ export default async function HomePage() {
     <main className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerRow}>
-          <h1 className={styles.title}>Rutz&apos;ib&apos;axik b&apos;i&apos;aj — Inscripciones</h1>
+          <h1 className={styles.title}>Inscripciones</h1>
           <Link href="/ingresar">
             <Button>Ingresar</Button>
           </Link>

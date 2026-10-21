@@ -23,7 +23,7 @@ export default async function ThanksPage({ params }: ThanksPageProps) {
     <main className={styles.page}>
       <Result
         status="success"
-        title="¡Yatqoyob'ej! Tu inscripción quedó registrada."
+        title="¡Gracias! Tu inscripción quedó registrada."
         subTitle={
           opened
             ? `${opened.template.nameSpanish} — ${opened.offering.municipalityName}, ${opened.offering.year}`

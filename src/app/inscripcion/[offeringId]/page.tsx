@@ -48,10 +48,7 @@ export default async function EnrollmentPage({ params }: EnrollmentPageProps) {
               Inicio de clases: {formatCalendarDate(offering.classesStartOn)}
             </p>
           ) : null}
-          <p className={styles.muted}>
-            Ütz tasik&apos;ij ri k&apos;o qa, k&apos;a ri&apos;, tatz&apos;ib&apos;aj ri
-            nk&apos;utüx chawe. / Lee con atención y escribe lo que se te pide.
-          </p>
+          <p className={styles.muted}>Lee con atención y escribe lo que se te pide.</p>
         </header>
 
         <EnrollmentForm offering={offering} template={template} departments={departments} />
